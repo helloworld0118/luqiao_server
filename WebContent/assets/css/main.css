@@ -1,0 +1,14 @@
+.nav-tabs li .closeable {
+/*     top: 65px; */
+/*     position: fixed; */
+    padding-left: 3px;
+    cursor: pointer;
+}
+#myTab{
+	height:35px;
+	color:#438eb9;
+}
+.tab-content{
+	padding:0px;
+	border:0px;
+}

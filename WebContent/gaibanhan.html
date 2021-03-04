@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title></title>
+<meta charset="utf-8" />
+<link href="assets/css/bootstrap.min.css" rel="stylesheet" />
+<link rel="stylesheet" href="assets/css/font-awesome.min.css" />
+<link rel="stylesheet" href="assets/css/bootstrap-table.css" />
+<link rel="stylesheet" href="assets/css/editable.css" />
+<link rel="stylesheet" href="assets/css/node.css"/>
+<!--[if IE 7]>
+      <link rel="stylesheet" href="assets/css/font-awesome-ie7.min.css" />
+    <![endif]-->
+
+<!-- page specific plugin styles -->
+
+<!-- fonts -->
+
+<!-- ace styles -->
+
+<link rel="stylesheet" href="assets/css/ace.min.css" />
+
+
+<!--[if lte IE 8]>
+      <link rel="stylesheet" href="assets/css/ace-ie.min.css" />
+    <![endif]-->
+
+<!-- inline styles related to this page -->
+
+<!-- ace settings handler -->
+
+<script src="assets/js/ace-extra.min.js"></script>
+
+<!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+
+<!--[if lt IE 9]>
+    <script src="assets/js/html5shiv.js"></script>
+    <script src="assets/js/respond.min.js"></script>
+    <![endif]-->
+<style type="text/css">
+
+</style>
+</head>
+<body>
+
+
+<div class="gaibanhan_container">
+<div id="toolbar">
+        <button id="add_btn" type="button"  title="添加记录" class="btn btn-success">添加记录</button>
+    </div>
+ <div class="col-sm-12">
+         <table id="gaibanhan_table"
+               data-toolbar="#toolbar"
+               data-pagination="true"
+               data-search="false"
+               data-page-size=15
+               data-side-pagination="server"
+               data-url="gaibanhan">
+        </table>
+  </div>
+</div>
+
+</body>
+<script type="text/javascript">
+    window.jQuery
+        || document
+            .write("<script src='assets/js/jquery-2.0.3.min.js'>"
+                + "<"+"/script>");
+  </script>
+
+  <!-- <![endif]-->
+
+  <!--[if IE]>
+<script type="text/javascript">
+ window.jQuery || document.write("<script src='assets/js/jquery-1.10.2.min.js'>"+"<"+"/script>");
+</script>
+<![endif]-->
+
+  <script type="text/javascript">
+    if ("ontouchend" in document)
+      document
+          .write("<script src='assets/js/jquery.mobile.custom.min.js'>"
+              + "<"+"/script>");
+  </script>
+  <script src="assets/bootstrap-table/bootstrap.min.js"></script>
+<script src="assets/bootstrap-table/bootstrap-table.js"></script>
+<script src="assets/bootstrap-table/bootstrap-table-editable.js"></script>
+<script src="assets/bootstrap-table/bootstrap-editable.js"></script>
+<script src="assets/js/bootstrap-confirmation.min.js"></script>
+<script src="assets/bootstrap-table/node.js"></script>
+
+<script type="text/javascript">
+$table=$("#gaibanhan_table");
+$(function(){
+	$("#add_btn").click(function(){
+		var data={col1:"{node:0,childNode:0}",col2:"",col3:"",col4:"",col5:"",col6:"",col7:"",col8:"",col9:""};
+		$table.bootstrapTable('append', data);
+		initConfirm();
+	});
+	$table.bootstrapTable({
+		pagination: false,
+        showRefresh: false,
+        search: false,
+        responseHandler:responseHandler,
+		columns: [
+			 [	
+				 {
+				    title: '序号',  
+				    rowspan: 2,
+				    formatter: function (value, row, index) {  
+				        return index+1;  
+				    } 
+			 	},{
+					 title: '桩号',
+		             rowspan: 2,
+		             field: 'col1',
+		             editable:{
+		            	 type:"node"
+		             }
+				 },{
+					 title: '交角（。）',
+		             field: 'col2',
+		             rowspan: 2 ,
+		             editable:true
+				 },{
+					 title: '孔径（m）',
+		             field: 'col3',
+		             rowspan: 2 ,
+		             editable:true
+				 },{
+					 title: '涵长（m）',
+		             field: 'col4',
+		             rowspan: 2 ,
+		             editable:true
+				 },{
+					 title: '盖板',
+		             colspan: 4 
+				 },{
+					 title: '备注 ',
+		             field: 'col5',
+		             rowspan: 2 ,
+		             editable:{
+		            	 type:"textarea",
+		            	 mode:'inline'
+		             }
+				 },{
+					 title: '操作',
+					 rowspan:2,
+					 events:operateEvents,
+	                 formatter:operateFormatter
+				 }
+			 ],[
+				 {
+					 title: '99cm宽矩形板',
+		             field: 'col6',
+		             editable:true
+				 },{
+					 title: '74cm宽矩形板',
+		             field: 'col7',
+		             editable:true
+				 },{
+					 title: '异形边板',
+		             field: 'col8',
+		             editable:true
+				 },{
+					 title: '厚度（m）',
+		             field: 'col9',
+		             editable:true
+				 }
+			 ]
+		],
+		 onClickCell: function (field, value, row, $element) {
+             rowIndex = $element.closest('tr').attr('data-index');
+        	 $table.find('tr[data-index="'+rowIndex+'"]  td:last-child').find('a[class="save"]').css("display","block");
+       		 $table.find('tr[data-index="'+rowIndex+'"]  td:last-child').find('a[class="remove"]').css("display","none");
+         }
+	});
+	$('.fixed-table-header').css("display","none");
+	$('#gaibanhan_table').css("margin-top","0");
+});
+   
+</script>
+<script type="text/javascript">
+var ROW,INDEX;
+
+
+function saveTableRow(row){
+	var URL="gaibanhan/add";
+	if (row.id){
+		URL="gaibanhan/edit/"+row.id;
+	}
+	$.ajax({
+        cache: true,
+        type: "POST",
+        url:URL,
+        data: row,
+        error: function(request) {
+            alert("请求出错");
+        },
+        success: function(data) {
+           if(!data.success){
+        	  alert("保存出错")
+           }else{
+        	 row.id=data.msg;
+       		 $table.find('tr[data-index="'+INDEX+'"]  td:last-child').find('a[class="save"]').css("display","none");
+           }
+        }
+    });
+}
+
+
+function initConfirm(){
+	$('[data-toggle=confirmation-singleton]').confirmation({
+	    rootSelector: '[data-toggle=confirmation-singleton]',
+	    onConfirm: function() {
+	    	console.info($(this));
+	    	if($(this).attr('class')=="remove"){
+	    		$table.find('tr[data-index="'+INDEX+'"]').remove();
+	    		window.location.reload();
+	    	}else{
+	    		saveTableRow(ROW);
+	    	}
+	    	
+	    }
+   });
+}
+
+
+function responseHandler(res){
+	$.each(res,function(index,item){
+		item['col1']="{node:"+item.node+",childNode:"+item.childnode+"}";
+	});
+	
+	return {
+		total:res.length,
+		rows:res
+	}
+}
+function operateFormatter(value, row, index) {
+	if(row.id){
+		 return [
+	            '<a class="save" style="display:none" href="javascript:void(0)" title="保存">',
+	            '<i class="icon-save bigger-160"></i>',
+	            '</a>' ]
+	            .join('');
+	}else{
+		return [
+		       '<a class="save2" data-toggle="confirmation-singleton" data-placement="left" data-content="保存后不可删除" href="javascript:void(0)" title="确认保存？">',
+		       '<i class="icon-save bigger-160"></i>',
+		       '</a>&nbsp;&nbsp;&nbsp;&nbsp;', 
+	           '<a class="remove" data-toggle="confirmation-singleton" data-placement="left"   href="javascript:void(0)" title="确认删除？">',
+	           '<i class="icon-remove bigger-160"></i>', '</a>' ]
+		       .join('');
+			}
+  }  
+ 
+ 
+window.operateEvents = {
+	   'click .save2': function (e, value, row, index) {
+	   		 ROW = row;
+	   		 INDEX = index;
+	     },
+   	   'click .save': function (e, value, row, index) {
+   		 	ROW = row;
+   		 	INDEX = index;
+   		   saveTableRow(row);
+       },
+       'click .remove': function (e, value, row, index) {
+    	   INDEX = index;
+       }
+    };
+</script>
+</html>

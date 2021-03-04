@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>材料登记</title>
+    <meta charset="utf-8" />
+    <link href="assets/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="assets/css/font-awesome.min.css" />
+    <link rel="stylesheet" href="assets/css/bootstrap-table.css" />
+    <link rel="stylesheet" href="assets/css/editable.css" />
+    <style type="text/css">
+      .page-list .btn-group{display: none;}
+      .page-list {display:none}
+      .fixed-table-toolbar .input-group{margin-top:10px;padding-left:0px;}
+    </style>
+    <!--[if IE 7]>
+      <link rel="stylesheet" href="assets/css/font-awesome-ie7.min.css" />
+    <![endif]-->
+
+<!-- page specific plugin styles -->
+
+<!-- fonts -->
+
+<!-- ace styles -->
+
+<link rel="stylesheet" href="assets/css/ace.min.css" />
+
+
+<!--[if lte IE 8]>
+      <link rel="stylesheet" href="assets/css/ace-ie.min.css" />
+    <![endif]-->
+
+<!-- inline styles related to this page -->
+
+<!-- ace settings handler -->
+
+<script src="assets/js/ace-extra.min.js"></script>
+
+<!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+
+<!--[if lt IE 9]>
+    <script src="assets/js/html5shiv.js"></script>
+    <script src="assets/js/respond.min.js"></script>
+    <![endif]-->
+</head>
+</head>
+<body>
+    <div class="materialmanager_container" style="margin:20px;">
+    <div id="toolbar">
+            <button id="btn_add_material" type="button"  data-toggle="modal" data-target="#addmaterialModal" title="添加材料" class="btn btn-success">添加材料</button>
+    </div>
+    <div class="col-sm-12">
+         <table id="table"
+               data-toolbar="#toolbar"
+               data-toggle="table"
+               data-pagination="true"
+               data-search="false"
+               data-page-size=15
+               data-side-pagination="server"
+               data-url="material/list">
+            <thead>
+            <tr>
+                <th data-field="name">供应商</th>
+                <th data-field="mobile">供应商电话</th>
+                <th data-field="mtName">材料名称</th>
+                <th data-field="mAddress">材料地址</th>
+                <th data-field="baseTypeName">单位</th>
+                <th data-field="materialSpecName">规格</th>
+                <th data-field="price">单价</th>
+                <th data-field="createDate">登记时间</th>
+                <th data-field="option" data-events="operateEvents" data-formatter="operateFormatter" >操作</th>
+            </tr>
+            </thead>
+        </table>
+      </div>
+    </div>
+    <div class="modal fade" id="addmaterialModal" tabindex="-1" role="dialog" aria-labelledby="addmaterialModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+            &times;
+          </button>
+          <h4 class="modal-title" id="addmaterialModalLabel_h4"></h4>
+        </div>
+        <div class="modal-body">
+           <form id="material_form"  onsubmit="return false;" class="form-horizontal" role="form" style="margin-left:auto;margin-right:auto;border:2px solid #d2d6de; padding:20px 40px 20px 0px;">
+              <fieldset>
+            <div class="form-group">
+                  <label class="col-sm-3 control-label no-padding-right" style="text-align:right;">供应商名称</label>
+                  <div class="col-sm-9">
+                  <input type="text" id="material_supplier_input" autocomplete="off"  name="name" placeholder="输入供应商名称" class="col-xs-12">    
+                </div>
+          </div>
+		   <div class="form-group">
+                  <label class="col-sm-3 control-label no-padding-right" style="text-align:right;">供应商电话</label>
+                  <div class="col-sm-9">
+                  <input type="text"  name="mobile" placeholder="输入供应商电话" class="col-xs-12">    
+                </div>
+          </div>
+           <div class="form-group">
+                  <label class="col-sm-3 control-label no-padding-right" style="text-align:right;">材料地址</label>
+                  <div class="col-sm-9">
+                  <input type="text"  name="mAddress" placeholder="输入材料地址" class="col-xs-12">    
+                </div>
+          </div>
+          <div class="form-group">
+                  <label class="col-sm-3 control-label no-padding-right" style="text-align:right;">材料类型</label>
+                  <div class="col-sm-9">
+                      <input type="hidden"  name="mid" id="mid_input" />   
+                      <input type="hidden"  name="sid" id="sid_input" />   
+					  <select name="materialType" id="material_type_select" class="form-control">
+					  </select>
+	               </div>
+          </div>
+           <div class="form-group">
+                  <label class="col-sm-3 control-label no-padding-right" style="text-align:right;">材料单位</label>
+                  <div class="col-sm-9">
+					  <select name="baseType" id="baseType_select" class="form-control">
+					  </select>
+	               </div>
+          </div>
+          <div id="checkbox_div" class="form-group">
+			    <label class="col-sm-3 control-label no-padding-right" style="text-align:right;">&nbsp;</label>
+			    <div class="col-sm-9">
+			    	<input id="ckb_type" name="type"  value="1"  type="checkbox" />多规格
+				</div>
+			</div>
+			<div id="materialSpec_div" style="display:none" class="form-group">
+				<label class="col-sm-3 control-label no-padding-right" style="text-align:right;">规格</label>
+			    <div class="col-sm-9">
+				    <select name="materialSpec" id="materialSpec_select" class="form-control">
+					</select>
+				</div>
+			</div>
+			<div id="none_div">
+           		 <div class="form-group">
+                  <label class="col-sm-3 control-label no-padding-right" style="text-align:right;">单价(元)</label>
+                  <div class="col-sm-9">
+					  <input type="text" name="price" placeholder="请输入单价" class="col-xs-12">		
+	               </div>
+         		 </div>
+         		 <!--  
+         		 <div class="form-group">				
+					<label class="col-sm-3 control-label no-padding-right" style="text-align:right;">计费开始日期</label>
+					<div class="input-group col-sm-9">
+						<input class="form-control date-picker" name="startDate" placeholder="计费开始日期"  type="text" data-date-format="dd-mm-yyyy" />
+						<span class="input-group-addon">
+							<i class="icon-calendar bigger-110"></i>
+						</span>
+					</div>
+	
+				</div>
+				-->
+           	</div>
+            <div class="form-group" id="spec_div" style="display:none;">
+                  <label class="col-sm-3 control-label no-padding-right" style="text-align:right;">规格信息</label>
+                  <div class="col-sm-9">
+                  <table id="material_detail_table">
+                    <thead>
+           			 <tr>
+                      </tr>
+                     </thead>
+                     <tbody>
+                     </tbody>
+                  </table>
+                  <button type="button" id="add_material_btn" style="float:right;"  title="添加规格" class="col-sm-1 btn btn-xs btn-success">                <i class="icon-plus bigger-120"></i>              </button>
+            </div>
+           	
+          </div>
+            </fieldset>
+             </form>
+        </div>
+        <div class="modal-footer">
+          
+          <button type="button" class="btn btn-default" id="material_dismiss_btn" data-dismiss="modal">关闭</button>
+          <button type="button" class="btn btn-primary" id="form_submit_btn"> 确认 </button>
+        </div>
+      </div><!-- /.modal-content -->
+    </div><!-- /.modal -->
+	</div>
+	
+	
+	
+<!--[if !IE]> -->
+  <script type="text/javascript">
+    window.jQuery
+        || document
+            .write("<script src='assets/js/jquery-2.0.3.min.js'>"
+                + "<"+"/script>");
+  </script>
+
+  <!-- <![endif]-->
+
+  <!--[if IE]>
+<script type="text/javascript">
+ window.jQuery || document.write("<script src='assets/js/jquery-1.10.2.min.js'>"+"<"+"/script>");
+</script>
+<![endif]-->
+
+  <script type="text/javascript">
+    if ("ontouchend" in document)
+      document
+          .write("<script src='assets/js/jquery.mobile.custom.min.js'>"
+              + "<"+"/script>");
+  </script>
+<script src="assets/bootstrap-table/bootstrap.min.js"></script>
+<script src="assets/bootstrap-table/bootstrap-table.js"></script>
+<script src="assets/bootstrap-table/bootstrap-table-editable.js"></script>
+<script src="assets/bootstrap-table/bootstrap-editable.js"></script>
+<script src="assets/js/date-time/bootstrap-datepicker.min.js"></script>
+<script src="assets/js/bootstrap-typeahead.js"></script>
+<script src="assets/js/bootstrapValidator.js"></script>
+<script src="assets/js/bootstrap-confirmation.min.js"></script>
+<script>
+var supplier=0;
+var formURL="addmaterial"
+var material_type_date,material_spec_date,unit_type_data;
+var $table_material=$("#table");
+var $table_material_detail = $('#material_detail_table');
+function fitForm(row){
+	if(!material_type_date){
+		material_type_date=[];
+		$.ajax({
+            cache: true,
+            type: "GET",
+            url:"materialtype",
+            async: false,
+            error: function(request) {
+                alert("请求出错");
+            },
+            success: function(data) {
+               $.each(data,function(index,item){
+            	   material_type_date.push({value:item.id,text:item.mtName});
+               });
+            }
+        });
+	}
+	
+	if(!unit_type_data){
+		unit_type_data = []; 
+		$.ajax({
+            cache: true,
+            type: "GET",
+            url:"basetypes/1",
+            async: false,
+            error: function(request) {
+                alert("请求出错");
+            },
+            success: function(data) {
+               $.each(data,function(index,item){
+           	   	   unit_type_data.push({value:item.id,text:item.name});
+               });
+            }
+        });
+	}
+	
+	$("#material_type_select").html("");
+	$.each(material_type_date,function(index,item){
+		$("#material_type_select").append('<option value='+item.value+'>'+item.text+'</option');
+	});
+	
+	$("#baseType_select").html("");
+	$.each(unit_type_data,function(index,item){
+		$("#baseType_select").append('<option value='+item.value+'>'+item.text+'</option');
+	});
+	if(row){
+		$("#material_type_select").val(row.mtid);
+		$("#baseType_select").val(row.baseType);
+	}
+};
+
+var ROW;
+function initConfirm(){
+	$('[data-toggle=confirmation-singleton]').confirmation({
+	    rootSelector: '[data-toggle=confirmation-singleton]',
+	    onConfirm: function() {
+	    	$.ajax({
+                cache: true,
+                type: "POST",
+                url:"material/delete/"+ROW.mid,
+                async: false,
+                error: function(request) {
+                    alert("请求出错");
+                },
+                success: function(data) {
+                   if(data.success){
+                	   $table_material.bootstrapTable('remove', {
+                           field: 'mid',
+                           values: [ROW.mid]
+                       });
+                	   initConfirm();
+                   }
+                }
+            });
+	    }
+   });
+}
+
+function populateForm(data) { 
+	$.each(data, function(key, value){  
+    	var $ctrl = $('[name='+key+']'); 
+	    if($ctrl.is('select')){
+	        $("option",$ctrl).each(function(){
+	            if (this.value==value) { this.selected=true; }
+	        });
+	    }
+	    else {
+	        switch($ctrl.attr("type"))  
+	        {  
+	            case "text" : case "hidden": case "textarea":  
+	            	if(value&&value!=""){
+	            		$ctrl.val(value);   
+	            	}
+	                break;   
+	            case "radio" : case "checkbox":   
+	                $ctrl.each(function(){
+	                   if($(this).attr('value') == value) {  $(this).attr("checked",value); } });   
+	                break;
+	        } 
+	     }}
+	)
+} 
+	    
+	    
+function operateFormatter(value, row, index) {
+    return [
+        '&nbsp;&nbsp;&nbsp;&nbsp;<a class="edit" href="javascript:void(0)" title="编辑">',
+        '<i class="icon-edit bigger-150"></i>',
+        '</a>',
+        '</a> &nbsp;&nbsp;&nbsp;&nbsp;',
+        '<a class="remove" data-toggle="confirmation-singleton" data-placement="left" href="javascript:void(0)" title="确认删除？">',
+        '<i class="icon-trash bigger-160"></i>', '</a>']
+        .join('');
+  }  
+function work_responseHandler(res){
+	return {
+        rows: res,
+        total: 0
+      }
+}  
+
+window.worker_operateEvents = {
+    	'click .remove':function(e, value, row, index){
+    		if(row.id!=-1){
+    			$.ajax({
+                    cache: true,
+                    type: "POST",
+                    url:supplier+"/deleteMeterialSpec/"+row.id,
+                    error: function(request) {
+                        alert("请求出错");
+                    },
+                    success: function(data) {
+                       if(data){
+                    	   $table_material_detail.bootstrapTable('remove', {
+                               field: 'data-index',
+                               values: [index]
+                           });
+                       }
+                    }
+                });
+    		}else{
+    			$table_material_detail.bootstrapTable('remove', {
+                    field: 'id',
+                    values: [row.id]
+                });
+    		}
+    		
+    	},
+    	'click .save': function (e, value, row, index) {
+    		var URL=supplier+"/addMeterialSpec";
+    		if($("#material_supplier_input").val().trim()==""){
+    			alert("请先填写供应商信息");
+	       		return;
+	       	 }
+    		if (row.id&&row.id!=-1){
+    			URL=supplier+"/editMeterialSpec/"+row.id;
+    		}
+    		$.ajax({
+                cache: true,
+                type: "POST",
+                url:URL,
+                data: {
+                	     "materialType":$("#material_type_select").val(),
+                	      "baseType":$("#baseType_select").val(),
+                	      "materialSpec":row.materialSpec,
+                	      "price":row.price,
+                	      "startDate":row.startDate,
+                	      "type":1
+                	    },
+                error: function(request) {
+                    alert("请求出错");
+                },
+                success: function(data) {
+                	console.info(data);
+                	console.info(data.success);
+                   if(!data.success){
+                	   console.info(data.success);
+                	 alert(data.msg);
+                	 row.id=-1;
+             		 $table_material_detail.find('tr[data-index="'+index+'"]  td:last-child').find('a[class="save"]').css("display","block");
+               		 $table_material_detail.find('tr[data-index="'+index+'"]  td:last-child').find('a[class="remove"]').css("display","block");
+                   }else{
+                	 if($("#material_supplier_input").val().trim()!=""){
+                		 $("#material_supplier_input").attr("disabled","disabled");
+                	 }
+                	 row.id=data.msg;
+               		 $table_material_detail.find('tr[data-index="'+index+'"]  td:last-child').find('a[class="save"]').css("display","none");
+               		 $table_material_detail.find('tr[data-index="'+index+'"]  td:last-child').find('a[class="remove"]').css("display","block");
+                   }
+                }
+            });
+    	
+        }
+    }    
+function worker_operateFormatter(value, row, index) {
+	if(row.id){
+		 return [
+	            '<a class="save" style="display:none" href="javascript:void(0)" title="保存">',
+	            '<i class="icon-save bigger-160"></i>',
+	            '</a>', 
+	            '<a class="remove"  href="javascript:void(0)" title="删除">',
+	            '<i class="icon-remove bigger-160"></i>', '</a>' ]
+	            .join('');
+	}else{
+    return [
+    	
+        '<a class="save" href="javascript:void(0)" title="保存">',
+        '<i class="icon-save bigger-160"></i>',
+        '</a>', 
+        '<a class="remove" style="display:none" href="javascript:void(0)" title="删除">',
+        '<i class="icon-remove bigger-160"></i>', '</a>' ]
+        .join('');
+	}
+  }   
+window.operateEvents = {
+        'click .edit': function (e, value, row, index) {
+        	e.stopPropagation();
+        	$('form')[0].reset();
+        	$("#material_form").bootstrapValidator('cleanForm');
+        	$("#none_div").css("display","block");
+			$table_material_detail.bootstrapTable("removeAll");
+			$("#spec_div").css("display","none");
+           	$("#btn_add_material").click();
+           	$("#addmaterialModalLabel_h4").html("编辑材料");
+           	formURL="supplier/edit";
+           	populateForm(row);
+           	fitForm(row);
+           	$("#checkbox_div").css("display","none");
+           	$("#materialSpec_div").css("display","block");
+           	$("#material_type_select").attr("disabled","disabled");
+           	$("#material_supplier_input").removeAttr("disabled");
+           	$("#materialSpec_select").html("");
+           	$.ajax({
+	            cache: false,
+	            type: "GET",
+	            url:"materialSpec?material="+row.mtid,
+	            async: false,
+	            error: function(request) {
+	                alert("请求出错");
+	            },
+	            success: function(data) {
+	           	   $("#materialSpec_select").append('<option value="0">默认</option>');
+	               $.each(data,function(index,item){
+	            	   $("#materialSpec_select").append('<option value="'+item.id+'">'+item.msName+'</option>');
+	               });
+	               $("#materialSpec_select").val(row.materialSpec);
+	            }
+	        });
+        },
+        'click .remove': function (e, value, row, index) {
+        	ROW =row;
+        }
+    };
+    $(function(){
+    	$table_material.on('load-success.bs.table', function (e) {
+    		initConfirm();
+    	});
+    	$("#add_material_btn").click(function(){
+    		var data={
+    	  	  		"baseType":"",
+    	  	  		"price":""
+    	  	  }
+    		$("form").find('span[class="tip"]').remove();
+    		$table_material_detail.bootstrapTable('append', data);
+    	    
+    	});
+    	$('.date-picker').change(function(){
+			$("#material_form").bootstrapValidator('revalidateField',$(this).attr('name'));
+    	});
+    	$('.date-picker').datepicker({
+			autoclose:true,
+			todayHighlight: true,
+               language:"zh-CN", 
+               format:"yyyy-mm-dd" 
+			}).next().on("click", function(){
+				$(this).prev().focus();
+		});
+    	$("#material_type_select").change(function(){
+    		if($("#ckb_type").is(':checked')){
+    			$("#ckb_type").click();
+    		}
+    	});
+    	$("#ckb_type").click(function(){
+    		if($(this).is(':checked')){
+    			$("#spec_div").css("display","block");
+    			$("#none_div").css("display","none");
+    			$("#none_div").find('input').attr('disabled','disabled')
+    			$("#none_div").find('input').val('');
+    			material_spec_date = []
+    			$.ajax({
+    	            cache: false,
+    	            type: "GET",
+    	            url:"materialSpec?material="+$("#material_type_select").val(),
+    	            async: false,
+    	            error: function(request) {
+    	                alert("请求出错");
+    	            },
+    	            success: function(data) {
+    	               if(data.length==0){
+    	            	   alert("该材料没有多规格信息");
+    	            	   $("#ckb_type").click();
+    	               }
+    	               $.each(data,function(index,item){
+    	            	   material_spec_date.push({value:item.id,text:item.msName});
+    	               });
+    	              
+    	            }
+    	        });
+    			$table_material_detail.bootstrapTable('destroy');
+    			$table_material_detail.bootstrapTable({
+    	    		pagination: false,
+    	            showRefresh: false,
+    	            search: false,
+    	            columns:[
+    	           	 {
+    	           		 field: "materialSpec",
+    	                 title: "规格",
+    	                 editable: {
+    	                	 type:"select",
+    	           	 		 source:material_spec_date,
+    	           	 		 validate:function(value){
+    	                		 if($.trim(value) == ''||!value){
+    	                			 return "此字段不能为空"
+    	                		 }
+    	                	 }
+    	                 }
+    	           	 },{
+    	           		 field: "price",
+    	                 title: "单价(元)",
+    	               	 editable:{
+    	               		type:"text",
+    	               		validate:function(value){
+    	                		 if($.trim(value) == ''||!value){
+    	                			 return "此字段不能为空"
+    	                		 }
+    	                		 var numRegExp=/^[0-9]+$/
+   	                           	 if(!numRegExp.test(value)){
+   	                           		 return '请填写数字'
+   	                           	 }
+    	                	 }
+    	               	 }
+    	           	 },{
+    	                 title: "操作",
+    	                 events:worker_operateEvents,
+    	                 formatter:worker_operateFormatter
+    	          	 }]
+    	    	 });
+    			
+    		}else{
+    			$("#none_div").css("display","block");
+    			$("#none_div").find('input').removeAttr('disabled');
+    			$table_material_detail.bootstrapTable("removeAll");
+    			$("#spec_div").css("display","none");
+    		}
+    	});
+    	$("#btn_add_material").click(function(){
+    		if($("#ckb_type").is(':checked')){
+    			$("#ckb_type").click();
+    		}
+    		$('form')[0].reset();
+    		$("#material_form").bootstrapValidator('cleanForm');
+    	   	$("#checkbox_div").css("display","block");
+           	$("#materialSpec_div").css("display","none");
+           	$("#material_type_select").removeAttr("disabled");
+           	$("#material_supplier_input").removeAttr("disabled");
+    		$("#addmaterialModalLabel_h4").html("添加材料");
+    		supplier=1000000+Math.random().toFixed(3)*1000+$("#table").find("tr").length;
+    		formURL="supplier/add?temp_id="+supplier;
+    		fitForm();
+    	});
+    	
+    	$("#material_form").bootstrapValidator({
+    		excluded: ':disabled',
+    		fields: {
+    			 name:{
+	 				 validators: {
+		                    notEmpty: {
+		                        message: '此字段不能为空'
+		                    }
+		                }
+			},
+			mobile:{
+				 validators: {
+	                    notEmpty: {
+	                        message: '此字段不能为空'
+	                    },
+	                    stringLength: {
+	                    	min: 11,
+	                        max: 11,
+	                        message: '手机号必须为11位'
+	                    },
+	                    regexp: {
+	                        regexp: /^[0-9]+$/,
+	                        message: '请填写数字'
+	                    }
+	                }
+			  },
+			price:{
+				validators: {
+                    notEmpty: {
+                        message: '此字段不能为空'
+                    },
+                    regexp: {
+                        regexp: /^[0-9]+$/,
+                        message: '请填写数字'
+                    }
+                }
+			 },
+			 startDate:{
+					validators: {
+	                    notEmpty: {
+	                        message: '此字段不能为空'
+	                    }
+	                }
+				 }
+			  
+    	 }
+    	});
+    	$("#form_submit_btn").click(function(){
+    		var btn = $(this);
+    		$("#material_supplier_input").removeAttr("disabled");
+    		$("#material_form").bootstrapValidator('validate');
+      		if($("#material_form").data("bootstrapValidator").isValid()){
+      			var mutl = true;
+      			if($("#ckb_type").is(':checked')){
+      				mutl=false;
+      				if($("#material_detail_table").find("tr[data-index]").length>0){
+      					mutl=true;
+      				}
+      			}
+      			if(mutl){
+      				$("#material_type_select").removeAttr("disabled");
+    	    		$.ajax({
+    	                cache: false,
+    	                type: "POST",
+    	                url:formURL,
+    	                data:$('#material_form').serialize(),
+    	                async: false,
+    	                error: function(request) {
+    	                    alert("请求出错");
+    	                },
+    	                success: function(data) {
+    	                   var obj = eval(data);
+    	                   if(obj.success){
+    	                   	$("#material_dismiss_btn").click();
+    	                   	 window.location.reload();
+    	                   }else{
+    	                	   alert(obj.msg);
+    	                   }
+    	                },
+    	   	            beforeSend: function(){
+    	   	  	        	$(btn).attr("disabled","disabled");
+    	   	  	           },
+    	  	             complete: function(){
+    	  	          	    $(btn).removeAttr("disabled");
+    	  	             }
+    	            });
+      			}else{
+      				$("#material_detail_table").parent().parent().parent().after("<span class='tip' style='color:red;font-size:12px;'>请填写规格信息</span>");
+      			}
+      			
+      	}
+      });
+      	var supplierDict = new Array(); 
+    	$("#material_supplier_input").typeahead({
+			onSelect: function(item) {
+				$("#material_form").bootstrapValidator('cleanForm');
+				var row = supplierDict[item.value];
+				supplier = row.id
+				$("#material_supplier_input").val(item.value);
+				formURL="supplier/addRelationship/"+item.value+"?temp_id="+supplier;
+				populateForm(row);
+			},
+			ajax: {
+				url: "supplier/search",
+				timeout: 500,
+				displayField: "name",
+				triggerLength: 1,
+				method: "get",
+				loadingClass: "loading-circle",
+				preDispatch: function (query) {
+					$("#material_supplier_input").after('<img class="load_img" style="position: absolute;right: 20px; top: 6px;" src="assets/image/5-121204193R7.gif"/>');
+
+					return {
+						param: query
+					}
+				},
+				preProcess: function (data) {
+					$("#material_supplier_input").parent().find(".load_img").css("display","none")
+
+					$.each(data,function(index,item){
+						supplierDict[item.id]=item;
+					});
+					return data;
+				}
+			}
+		});
+    	
+    });
+</script>
+</body>
+</html>

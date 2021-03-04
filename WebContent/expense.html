@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>报销</title>
+<link href="assets/css/bootstrap.min.css" rel="stylesheet" />
+<link rel="stylesheet" href="assets/css/font-awesome.min.css" />
+<link rel="stylesheet" href="assets/css/bootstrap-table.css" />
+<!--[if IE 7]>
+		  <link rel="stylesheet" href="assets/css/font-awesome-ie7.min.css" />
+		<![endif]-->
+
+<!-- page specific plugin styles -->
+
+<!-- fonts -->
+
+<!-- ace styles -->
+
+<link rel="stylesheet" href="assets/css/ace.min.css" />
+
+
+<!--[if lte IE 8]>
+		  <link rel="stylesheet" href="assets/css/ace-ie.min.css" />
+		<![endif]-->
+
+<!-- inline styles related to this page -->
+
+<!-- ace settings handler -->
+
+<script src="assets/js/ace-extra.min.js"></script>
+
+<!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+
+<!--[if lt IE 9]>
+		<script src="assets/js/html5shiv.js"></script>
+		<script src="assets/js/respond.min.js"></script>
+		<![endif]-->
+</head>
+<body>
+<div class="expense_container">
+<div id="toolbar">
+<div class="form-inline" role="form">
+ 		<div style="float:right">
+	        <div class="form-group">
+	            <span>提交时间: </span>
+	            <input name="daterange" class="form-control" style="width:180px;" type="text" value="">
+	        </div>
+	         <div class="form-group">
+	            <span>报销人: </span>
+	            <input name="person" class="form-control" style="width:120px;" type="text" value="">
+	        </div>
+            <button id="search_btn" type="button"  title="搜索" class="btn btn-success">搜索</button>
+        </div>
+        </div>
+</div>
+	<table id="table"
+              data-toggle="table"
+              data-pagination="true"
+              data-side-pagination="server"
+              data-url="expense/list">
+           <thead>
+           <tr>
+               <th data-field="person">报销人</th>
+               <th data-field="price">报销金额</th>
+               <th data-field="date">报销时间</th>
+               <th data-field="priceType">费用类型</th>
+               <th data-field="billType">票据类型</th>
+               <th data-field="department">所在部门</th>
+               <th data-field="staffName">提交人</th>
+           </tr>
+           </thead>
+       </table>
+</div>
+</body>
+<!--[if !IE]> -->
+
+	<script type="text/javascript">
+		window.jQuery
+				|| document
+						.write("<script src='assets/js/jquery-2.0.3.min.js'>"
+								+ "<"+"/script>");
+	</script>
+
+	<!-- <![endif]-->
+
+	<!--[if IE]>
+<script type="text/javascript">
+ window.jQuery || document.write("<script src='assets/js/jquery-1.10.2.min.js'>"+"<"+"/script>");
+</script>
+<![endif]-->
+
+	<script type="text/javascript">
+		if ("ontouchend" in document)
+			document
+					.write("<script src='assets/js/jquery.mobile.custom.min.js'>"
+							+ "<"+"/script>");
+	</script>
+	<script src="assets/bootstrap-table/bootstrap.min.js"></script>
+    <script src="assets/bootstrap-table/bootstrap-table.js"></script>
+    <script src="assets/js/date-time/moment.min.js"></script>
+<script src="assets/js/date-time/daterangepicker.min.js"></script>
+    <script type="text/javascript">
+      $(function(){
+    	  $("#search_btn").click(function(){
+    			var url = "expense/list?daterange="+$("input[name='daterange']").val()+"&person="+$("input[name='person']").val(); 
+    				
+    			$("#table").bootstrapTable('refresh' ,{url: url});	
+    		});
+      });
+    </script>
+</html>

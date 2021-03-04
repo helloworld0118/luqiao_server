@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>项目管理</title>
+    <meta charset="utf-8" />
+    <link href="assets/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="assets/css/font-awesome.min.css" />
+    <link rel="stylesheet" href="assets/css/bootstrap-table.css" />
+    <link rel="stylesheet" href="assets/css/daterangepicker.css" />
+    <style type="text/css">
+      .fixed-table-toolbar .input-group{margin-top:10px;padding-left:0px;}
+    </style>
+    <!--[if IE 7]>
+      <link rel="stylesheet" href="assets/css/font-awesome-ie7.min.css" />
+    <![endif]-->
+
+<!-- page specific plugin styles -->
+
+<!-- fonts -->
+
+<!-- ace styles -->
+
+<link rel="stylesheet" href="assets/css/ace.min.css" />
+
+
+<!--[if lte IE 8]>
+      <link rel="stylesheet" href="assets/css/ace-ie.min.css" />
+    <![endif]-->
+
+<!-- inline styles related to this page -->
+
+<!-- ace settings handler -->
+
+<script src="assets/js/ace-extra.min.js"></script>
+
+<!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+
+<!--[if lt IE 9]>
+    <script src="assets/js/html5shiv.js"></script>
+    <script src="assets/js/respond.min.js"></script>
+    <![endif]-->
+    <style>
+        .daterangepicker {
+         z-index:1511 !important;
+        }
+    </style>
+</head>
+<body>
+    <div class="projectmanger_container" style="margin:20px;">
+    <div id="toolbar">
+        <button id="btn_project" type="button" style="display:none" title="添加项目" class="btn btn-success">添加项目</button>
+        <input id="btn_project_model" type="hidden" data-toggle="modal" data-target="#addProjectModal"/>
+    </div>
+    <div class="col-sm-12">
+         <table id="table"
+               data-toolbar="#toolbar"
+               data-toggle="table"
+               data-pagination="true"
+               data-search="false"
+               data-page-size=15
+               data-cache=false
+               data-side-pagination="server"
+               data-url="project/ajaxlist">
+            <thead>
+            <tr>
+                <th data-field="moduleName">所属模块</th>
+                <th data-field="name">项目名字</th>
+                <th data-field="createDate">创建时间</th>
+                <th data-field="address">施工地址</th>
+                <th data-field="startDate">计划开始时间</th>
+                <th data-field="endDate">计划结束时间</th>
+                <th data-field="startNode">开始桩号</th>
+                <th data-field="endNode">结束桩号</th>
+                <th data-field="option" data-events="operateEvents" data-formatter="operateFormatter" >操作</th>
+            </tr>
+            </thead>
+        </table>
+      </div>
+    </div>
+ <div class="modal fade" id="addProjectModal" tabindex="-1" role="dialog" aria-labelledby="addProjectModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+            &times;
+          </button>
+          <h4 class="modal-title" id="addProjectModalLabel">
+           		 添加项目
+          </h4>
+        </div>
+        <div class="modal-body">
+           <form id="project_form" class="form-horizontal" role="form" style="margin-left:auto;margin-right:auto;border:2px solid #d2d6de; padding:20px 50px;">
+           <fieldset>
+        	<div class="form-group">
+						    <label class="col-sm-3 control-label no-padding-right" style="text-align:right;">所属模块</label>
+						    <div class="col-sm-9">
+								<select name="module" id="module_select" class="form-control col-xs-10 col-sm-5">
+								</select>
+								<span class="require_tip" title="必选项">*</span>
+							</div>					
+				</div>
+				<div class="form-group">
+						    <label class="col-sm-3 control-label no-padding-right" style="text-align:right;">项目名称</label>
+						    <div class="col-sm-9">
+						    <input type="hidden" name="id" id="project_id_input"/>
+						    <input  type="hidden" value="" name="pmanager" />
+						    <input  type="hidden" value="" name="manager" />
+						    <input  name ="name" type="text" value="" placeholder="输入项目名称" class="col-xs-12">
+						    	<span class="require_tip" title="必选项">*</span>		
+							</div>
+				</div>
+				<div class="form-group">
+				
+					<label class="col-sm-3 control-label no-padding-right" style="text-align:right;">施工起止时间</label>
+					<div class="input-group col-sm-9">
+					 <input class="form-control col-xs-10 col-sm-5"
+						name="daterange"type="text" value="" />
+						<span class="input-group-addon">
+							<i class="icon-calendar bigger-110"></i>
+						</span>
+					</div>
+
+				</div>
+				<div class="form-group">
+						    <label class="col-sm-3 control-label no-padding-right" style="text-align:right;">施工地址</label>
+						    <div class="col-sm-9">
+						    <input type="text" name="address" value=""  placeholder="输入施工地址" class="col-xs-12">
+						    <input type="hidden" name="createDate" value=""  />
+							</div>
+				</div>
+				<div class="form-group">
+						    <label class="col-sm-3 control-label no-padding-right" style="text-align:right;">开始桩号(K)</label>
+						    <div class="col-sm-9">
+						    <input type="number" name="startNode" value=""  placeholder="输入开始桩号" class="col-xs-12">		
+							</div>
+				</div>
+				<div class="form-group">
+						    <label class="col-sm-3 control-label no-padding-right" style="text-align:right;">结束桩号(K)</label>
+						    <div class="col-sm-9">
+						    <input type="number" name="endNode" value="" placeholder="输入结束桩号" class="col-xs-12">		
+							</div>
+				</div>
+				    
+					<div class="form-group">
+						    <label class="col-sm-3 control-label no-padding-right" style="text-align:right;">项目描述</label>
+						    <div class="col-sm-9">
+						    <textarea name="description"  class="form-control limited" id="description_txt" ></textarea>	
+							</div>
+				   </div>
+
+            </fieldset>
+             </form>
+        </div>
+        <div class="modal-footer">
+          
+         <button type="button" id="project_form_dismiss" class="btn btn-default" data-dismiss="modal">关闭
+		</button>
+		<button type="button" id="project_form_submit" class="btn btn-primary">
+						确认
+			</button>
+        </div>
+      </div><!-- /.modal-content -->
+    </div><!-- /.modal -->
+    </div>
+ 
+<!--[if !IE]> -->
+
+  <script type="text/javascript">
+    window.jQuery
+        || document
+            .write("<script src='assets/js/jquery-2.0.3.min.js'>"
+                + "<"+"/script>");
+  </script>
+
+  <!-- <![endif]-->
+
+  <!--[if IE]>
+<script type="text/javascript">
+ window.jQuery || document.write("<script src='assets/js/jquery-1.10.2.min.js'>"+"<"+"/script>");
+</script>
+<![endif]-->
+
+  <script type="text/javascript">
+    if ("ontouchend" in document)
+      document
+          .write("<script src='assets/js/jquery.mobile.custom.min.js'>"
+              + "<"+"/script>");
+  </script>
+  <script src="assets/bootstrap-table/bootstrap.min.js"></script>
+  <script src="assets/bootstrap-table/bootstrap-table.js"></script>
+  <script src="assets/js/date-time/moment.min.js"></script>
+  <script src="assets/js/date-time/bootstrap-datepicker.min.js"></script>
+  <script src="assets/js/date-time/daterangepicker.min.js"></script>
+  <script src="assets/js/bootstrap-typeahead.js"></script>
+  <script src="assets/js/bootstrapValidator.js"></script>
+<script  type="text/javascript">
+var formURL="project/addInfo";
+function populateForm(data) { 
+	$.each(data, function(key, value){  
+	    var $ctrl = $('[name='+key+']'); 
+	    if($ctrl.is('select')){
+	        $("option",$ctrl).each(function(){
+	            if (this.value==value) { this.selected=true; }
+	        });
+	    }
+	    else {
+	        switch($ctrl.attr("type"))  
+	        {  
+	            case "text" :  case "number": case "hidden":  case "textarea":  
+	                $ctrl.val(value);   
+	                break;   
+	            case "radio" : case "checkbox":   
+	                $ctrl.each(function(){
+	                   if($(this).attr('value') == value) {  $(this).attr("checked",value); } });   
+	                break;
+	        } 
+	    }})} 
+
+function operateFormatter(value, row, index) {
+		  return [
+	          '&nbsp;&nbsp;&nbsp;&nbsp;<a class="edit" href="javascript:void(0)" title="编辑">',
+	          '<i class="icon-edit bigger-150"></i>',
+	          '</a>' ]
+	          .join('');
+    }
+var $table = $('#table');
+
+function fitForm(row){
+	$.ajax({
+        cache: true,
+        type: "GET",
+        url:"project/getModules",
+        async: false,
+        error: function(request) {
+            alert("请求出错");
+        },
+        success: function(data) {
+           var obj = eval(data);
+           $("#module_select").html('');
+           $.each(obj,function(index,item){
+          	  	 $("#module_select").append('<option value="'+item.id+'">'+item.name+'</option');
+        	});
+        }
+    });
+	if(row){
+	   populateForm(row);
+       if(row.startDate&&row.endDate){
+    	   $("input[name='daterange']").val(row.startDate+" to "+ row.endDate);
+       }
+   }
+}
+window.operateEvents = {
+        'click .edit': function (e, value, row, index) {
+        	fitForm(row);
+        	$("#description_txt").val(row.description)
+        	$("#addProjectModalLabel").html("编辑项目");
+           	$("#btn_project_model").click();
+           	formURL="project/ajaxEdit/"+row.id;
+        }
+    };
+    
+    $(function(){
+    	$("#project_form").bootstrapValidator({
+    		excluded: ':disabled',
+    		fields: {
+    			 name:{
+    				 validators: {
+ 	                    notEmpty: {
+ 	                        message: '此字段不能为空'
+ 	                    },
+ 	                    callback: {
+                           message: '此项目名称已经存在',
+                           callback: function(value, validator) {
+                        	    var result;
+                              	$.ajax({
+				                    cache: false,
+				                    type: "POST",
+				                    url:"project/hasName",
+				                    data:{name:value,id:$("#project_id_input").val()},
+				                    async: false,
+				                    error: function(request) {
+				                        alert("请求出错");
+				                    },
+				                    success: function(data) {
+				                       result = data.success;
+				                    	
+				                    },
+				                });	
+                               return !result;
+                           }
+                       }
+ 	                }
+ 			 },
+ 			startNode:{
+				 validators: {
+                   regexp: {
+                       regexp: /^[0-9]+$/,
+                       message: '请填写数字'
+                   },
+                   stringLength: {
+                        min: 0,
+                        max: 10,
+                        message: '桩号最大长度为10位'
+                    }
+			 	}
+			 },
+			 endNode:{
+				 validators: {
+                   regexp: {
+                       regexp: /^[0-9]+$/,
+                       message: '请填写数字'
+                   },
+                   stringLength: {
+                        min: 0,
+                        max: 10,
+                        message: '桩号最大长度为10位'
+                    }
+			 	}
+			 },
+ 			description:{
+				 validators: {
+					 stringLength: {
+	                        min: 0,
+	                        max: 100,
+	                        message: '最长为100个字符'
+	                    }
+	                }
+			 }
+    		}
+    	});
+    	$("#btn_project").click(function(){
+    		$('form')[0].reset();
+    		fitForm();
+    		$("#addProjectModalLabel").html("添加项目");
+    		$("#btn_project_model").click();
+    		formURL="project/add";
+    	});
+    	
+    	$("#project_form_submit").click(function(){
+    		var btn = $(this);
+    		$("#project_form").bootstrapValidator('validate');
+    		if($("#project_form").data("bootstrapValidator").isValid()){
+    			$.ajax({
+                    cache: false,
+                    type: "POST",
+                    url:formURL,
+                    data:$('#project_form').serialize(),// 你的formid
+                    async: false,
+                    error: function(request) {
+                        alert("请求出错");
+                    },
+                    success: function(data) {
+                       var obj = eval(data);
+                       if(obj.success){
+                       	 $("#project_form_dismiss").click();
+                       	 window.location.reload();
+                       }
+                    },
+                    beforeSend: function(){
+	   	  	        	$(btn).attr("disabled","disabled");
+	   	  	        },
+	  	            complete: function(){
+	  	          	    $(btn).removeAttr("disabled");
+	  	            }
+                });	
+    		}
+    	});
+    	
+    	$('input[name="daterange"]').daterangepicker(  
+                {  
+                    // startDate: moment().startOf('day'),  
+                    //endDate: moment(),  
+                    //minDate: '01/01/2012',    //最小时间  
+                   // maxDate : moment(), //最大时间   
+                    dateLimit : {  
+                        days : 30  
+                    }, //起止时间的最大间隔  
+                    //showDropdowns : true,  
+                    showWeekNumbers : false, //是否显示第几周  
+                    //timePicker : true, //是否显示小时和分钟  
+                    //timePickerIncrement : 60, //时间的增量，单位为分钟  
+                    timePicker12Hour : false, //是否使用12小时制来显示时间  
+                    /* ranges : {  
+                        //'最近1小时': [moment().subtract('hours',1), moment()],  
+                        '今日': [moment().startOf('day'), moment()],  
+                        '昨日': [moment().subtract('days', 1).startOf('day'), moment().subtract('days', 1).endOf('day')],  
+                        '最近7日': [moment().subtract('days', 6), moment()],  
+                        '最近30日': [moment().subtract('days', 29), moment()]  
+                    },   */
+                    opens : 'left', //日期选择框的弹出位置  
+                    buttonClasses : [ 'btn btn-default' ],  
+                    applyClass : 'btn-small btn-primary blue',  
+                    cancelClass : 'btn-small',  
+                    format : 'YYYY-MM-DD', //控件中from和to 显示的日期格式  
+                    separator : ' to ',  
+                    locale : {  
+                        applyLabel : '确定',  
+                        cancelLabel : '取消',  
+                        fromLabel : '起始时间',  
+                        toLabel : '结束时间',  
+                        customRangeLabel : '自定义',  
+                        daysOfWeek : [ '日', '一', '二', '三', '四', '五', '六' ],  
+                        monthNames : [ '一月', '二月', '三月', '四月', '五月', '六月',  
+                                '七月', '八月', '九月', '十月', '十一月', '十二月' ],  
+                        firstDay : 1  
+                    }  
+                }, function(start, end, label) {//格式化日期显示框  
+                 $('input[name="daterange"]').html(start.format('YYYY-MM-DD') + ' - ' + end.format('YYYY-MM-DD'));  
+               }); 
+    	
+    	
+    	
+    	
+		$("#pmanager_name_input").typeahead({
+			onSelect: function(item) {
+				//var row = userDict[item.value];
+				//formURL="user/addRelationship/"+item.value;
+				//fitForm(row);
+				$("#pmanager_input").val(item.value);
+			},
+			ajax: {
+				url: "user/searchMananger",
+				timeout: 500,
+				displayField: "name",
+				triggerLength: 1,
+				method: "get",
+				loadingClass: "loading-circle",
+				preDispatch: function (query) {
+					return {
+						param: query
+					}
+				},
+				preProcess: function (data) {
+					return data;
+				}
+			}
+		});
+    });
+    
+</script>
+</body>
+</html>

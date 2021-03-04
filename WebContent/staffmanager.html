@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>员工管理</title>
+    <meta charset="utf-8" />
+    <link href="assets/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="assets/css/font-awesome.min.css" />
+    <link rel="stylesheet" href="assets/css/bootstrap-table.css" />
+    <link rel="stylesheet" href="assets/css/daterangepicker.css" />
+    <link rel="stylesheet" href="assets/css/bootstrap-multiselect.css" />
+
+    <style type="text/css">
+      .fixed-table-toolbar .input-group{margin-top:10px;padding-left:0px;}
+    </style>
+    <!--[if IE 7]>
+      <link rel="stylesheet" href="assets/css/font-awesome-ie7.min.css" />
+    <![endif]-->
+
+<!-- page specific plugin styles -->
+
+<!-- fonts -->
+
+<!-- ace styles -->
+
+<link rel="stylesheet" href="assets/css/ace.min.css" />
+
+
+<!--[if lte IE 8]>
+      <link rel="stylesheet" href="assets/css/ace-ie.min.css" />
+    <![endif]-->
+
+<!-- inline styles related to this page -->
+
+
+<!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+
+<!--[if lt IE 9]>
+    <script src="assets/js/html5shiv.js"></script>
+    <script src="assets/js/respond.min.js"></script>
+    <![endif]-->
+    <style>
+        .daterangepicker {
+         z-index:1511 !important;
+        }
+    </style>
+</head>
+<body>
+    <div class="staffmanger_container" style="margin:20px;">
+    <div id="toolbar">
+        <button id="btn_staff" type="button"  title="添加项目" class="btn btn-success">添加员工</button>
+        
+        <input id="btn_staff_model" type="hidden" data-toggle="modal" data-target="#addstaffModal"/>
+        
+    </div>
+    <div class="col-sm-12">
+         <table id="table"
+               data-toolbar="#toolbar"
+               data-toggle="table"
+               data-pagination="true"
+               data-search="false"
+               data-page-size=15
+               data-side-pagination="server"
+               data-url="users">
+            <thead>
+            <tr>
+                <th data-field="name">姓名</th>
+                <th data-field="moduleName"  data-formatter="sexFormatter" >性别</th>
+                <th data-field="idcard">身份证</th>
+                <th data-field="education">学历</th>
+                <th data-field="unit_price">工资(月)</th>
+                <th data-field="mobile">手机号</th>
+                <th data-field="type" data-formatter="typeFormatter" >类型</th>
+                <th data-field="state" data-formatter="stateFormatter"  >状态</th>
+                <th data-field="hiredate">进场时间</th>
+                <th data-field="roles">角色</th>
+                <th data-field="option" data-events="operateEvents" data-formatter="operateFormatter" >操作</th>
+            </tr>
+            </thead>
+        </table>
+      </div>
+    </div>
+ <div class="modal fade" id="addstaffModal" tabindex="-1" role="dialog" aria-labelledby="addstaffModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+            &times;
+          </button>
+          <h4 class="modal-title" id="addstaffModalLabel">
+            添加项目
+          </h4>
+        </div>
+        <div class="modal-body">
+           <form id="staff_form" class="form-horizontal" role="form" style="margin-left:auto;margin-right:auto;border:2px solid #d2d6de; padding:20px 40px 20px 0px;">
+         		<fieldset>
+			    			<div class="form-group">
+							    <label class="col-sm-3 control-label no-padding-right" style="text-align:right;">姓名</label>
+							    <div class="col-sm-9">
+							    <input id="name_input" name="name" type="text"  autocomplete="off" placeholder="输入员工姓名" class="col-xs-12">
+							    <input type="hidden" id="user_id_input" name="id" />		
+								<span class="require_tip" title="必选项">*</span>	
+								</div>
+							</div>
+							<div class="form-group">
+							    <label class="col-sm-3 control-label no-padding-right" style="text-align:right;">性别</label>
+							    <div class="col-sm-9">
+								    <p style="margin-top:3px;"><input name="sex" value="0" checked="checked" type="radio" class="ace" />
+										<span class="lbl"> 男</span>
+										<input name="sex"  value="1" type="radio" class="ace" />
+										<span class="lbl"> 女</span>
+									</p>
+								</div>
+							</div>
+							<div class="form-group">
+							    <label class="col-sm-3 control-label no-padding-right" style="text-align:right;">手机号</label>
+							    <div class="col-sm-9">
+							    <input type="text" name="mobile" autocomplete="off" placeholder="输入手机号" class="col-xs-12">
+							    <span class="require_tip" title="必选项">*</span>			
+								</div>
+							</div>
+							<div class="form-group">
+							    <label class="col-sm-3 control-label no-padding-right" style="text-align:right;">初始密码</label>
+							    <div class="col-sm-9">
+							    <input type="password" name="password" autocomplete="off" placeholder="请输入初始密码" class="col-xs-12">
+							    <span class="require_tip" title="必选项">*</span>			
+								</div>
+							</div>
+							<div class="form-group">
+							    <label class="col-sm-3 control-label no-padding-right" style="text-align:right;">角色</label>
+							    <div class="col-sm-9">
+									<select id="role_multiselect" class="multiselect" name="role" multiple="multiple">
+									</select>
+									<span class="require_tip" title="必选项">*</span>	
+								</div>					
+							</div>
+							<div class="form-group">
+							    <label class="col-sm-3 control-label no-padding-right" style="text-align:right;">身份证</label>
+							    <div class="col-sm-9">
+							    <input type="text" name="idcard" placeholder="输入身份证" class="col-xs-12">		
+								</div>
+							</div>
+							<div class="form-group">
+							    <label class="col-sm-3 control-label no-padding-right" style="text-align:right;">学历</label>
+							    <div class="col-sm-9">
+							    <input type="text" name="education" placeholder="输入学历" class="col-xs-12">		
+								</div>
+							</div>
+							<div class="form-group">
+							    <label class="col-sm-3 control-label no-padding-right" style="text-align:right;">月工资</label>
+							    <div class="col-sm-9">
+							    <input type="hidden" name="basePriceType" value="1"/>
+							    <input type="number" name="unit_price" placeholder="输入月工资" class="col-xs-12">		
+								</div>
+							</div>
+							<!-- 
+							<div class="form-group">
+							    <label class="col-sm-3 control-label no-padding-right" style="text-align:right;">岗位</label>
+							    <div class="col-sm-9">
+							    <input type="text" name="position" placeholder="输入岗位" class="col-xs-12">		
+								</div>
+							</div> -->
+							
+						   <div class="form-group">
+						   		<label class="col-sm-3 control-label no-padding-right" style="text-align:right;">类型</label>
+							    <div class="col-sm-9">
+									<select name="type" class="form-control col-xs-10 col-sm-5">
+										<option value="0" selected="selected">内部</option>
+										<option value="1">外聘</option>
+									</select>
+								</div>	
+						   </div>
+						    <div class="form-group">
+						   		<label class="col-sm-3 control-label no-padding-right" style="text-align:right;">状态</label>
+							    <div class="col-sm-9">
+									<select name="state" class="form-control col-xs-10 col-sm-5">
+										<option value="0" selected="selected">在职</option>
+										<option value="1">离职</option>
+									</select>
+								</div>	
+						   </div>
+							<div class="form-group">				
+								<label class="col-sm-3 control-label no-padding-right" style="text-align:right;">进场时间</label>
+								<div class="input-group col-sm-9">
+									<input class="form-control date-picker" name="hiredate" placeholder="选择进场时间"  type="text" data-date-format="dd-mm-yyyy" />
+									<span class="input-group-addon">
+										<i class="icon-calendar bigger-110"></i>
+									</span>
+								</div>
+
+							</div>
+						
+			    	</fieldset>
+             </form>
+        </div>
+        <div class="modal-footer">
+          
+         <button type="button" id="staff_form_dismiss" class="btn btn-default" data-dismiss="modal">关闭
+		</button>
+		<button type="button" id="staff_form_submit" class="btn btn-primary">
+						确认
+			</button>
+        </div>
+      </div><!-- /.modal-content -->
+    </div><!-- /.modal -->
+    </div>
+ 
+
+
+<!--[if !IE]> -->
+
+  <script type="text/javascript">
+    window.jQuery
+        || document
+            .write("<script src='assets/js/jquery-2.0.3.min.js'>"
+                + "<"+"/script>");
+  </script>
+
+  <!-- <![endif]-->
+
+  <!--[if IE]>
+<script type="text/javascript">
+ window.jQuery || document.write("<script src='assets/js/jquery-1.10.2.min.js'>"+"<"+"/script>");
+</script>
+<![endif]-->
+
+  <script type="text/javascript">
+    if ("ontouchend" in document)
+      document
+          .write("<script src='assets/js/jquery.mobile.custom.min.js'>"
+              + "<"+"/script>");
+  </script>
+  <script src="assets/bootstrap-table/bootstrap.min.js"></script>
+  <script src="assets/js/ace.min.js"></script>
+  <script src="assets/js/bootstrap-multiselect.js"></script>
+  <script src="assets/bootstrap-table/bootstrap-table.js"></script>
+  <script src="assets/js/date-time/moment.min.js"></script>
+  <script src="assets/js/date-time/bootstrap-datepicker.min.js"></script>
+  <script src="assets/js/date-time/daterangepicker.min.js"></script>
+  <script src="assets/js/bootstrap-typeahead.js"></script>
+  <script src="assets/js/bootstrap-confirmation.min.js"></script>
+  <script src="assets/js/bootstrapValidator.js"></script>
+<script>
+var ROW,TMEP_ID;
+function initConfirm(){
+	$('[data-toggle=confirmation-singleton]').confirmation({
+	    rootSelector: '[data-toggle=confirmation-singleton]',
+	    onConfirm: function() {
+	    	$.ajax({
+                cache: true,
+                type: "GET",
+                url:"user/delete/"+ROW.id,
+                async: false,
+                error: function(request) {
+                    alert("请求出错");
+                },
+                success: function(data) {
+                   if(data.success){
+                	   $table.bootstrapTable('remove', {
+                           field: 'id',
+                           values: [ROW.id]
+                       });
+                	   initConfirm();
+                   }
+                }
+            });
+	    }
+   });
+}
+
+
+var formURL="staff/addInfo";
+function populateForm(data) { 
+	$.each(data, function(key, value){  
+	    var $ctrl = $('[name='+key+']'); 
+	    if($ctrl.is('select')){
+	        $("option",$ctrl).each(function(){
+	            if (this.value==value) { this.selected=true; }
+	        });
+	    }
+	    else {
+	        switch($ctrl.attr("type"))  
+	        {  
+	            case "text": case "number": case "password":  case "hidden":  case "textarea":  
+	                $ctrl.val(value);   
+	                break;   
+	            case "radio" : case "checkbox":   
+	                $ctrl.each(function(){
+	                   if($(this).attr('value') == value) {  $(this).attr("checked",value); } });   
+	                break;
+	        } 
+	    }})} 
+
+function operateFormatter(value, row, index) {
+	  if(row.id==0){
+		  return '';
+	  }
+	  var hasRemove=true;;
+	  $.each(row.roleIds.split(","),function(i,item){
+		  if(item==2||item==3){
+			  hasRemove=false;
+			  
+		  }
+	  });
+	  if(hasRemove){
+		  return [
+	          '&nbsp;&nbsp;&nbsp;&nbsp;<a class="edit" href="javascript:void(0)" title="编辑">',
+	          '<i class="icon-edit bigger-150"></i>',
+	          '</a> &nbsp;&nbsp;&nbsp;&nbsp;',
+	          '<a class="remove" data-toggle="confirmation-singleton" data-placement="left"   href="javascript:void(0)" title="确认删除？">',
+	          '<i class="icon-trash bigger-160"></i>', '</a>' ]
+	          .join('');
+	  }else{
+		  return [
+	          '&nbsp;&nbsp;&nbsp;&nbsp;<a class="edit" href="javascript:void(0)" title="编辑">',
+	          '<i class="icon-edit bigger-150"></i>',
+	          '</a>']
+	          .join('');
+	  }
+	
+    }
+function sexFormatter(value, row, index) {
+	if(!row.sex&&row.sex!=0){
+		return "-";
+	}
+	return row.sex==0?"男":"女";
+}
+function typeFormatter(value, row, index) {
+	if(!row.type&&row.type!=0){
+		return "-";
+	}
+	return row.type==0?"内部":"外聘";
+}
+function stateFormatter(value, row, index) {
+	if(!row.state&&row.state!=0){
+		return "-";
+	}
+	return row.state==0?"在职":"离职";
+}
+function fitForm(row){
+	$.ajax({
+        cache: true,
+        type: "GET",
+        url:"roles",
+        async: false,
+        error: function(request) {
+            alert("请求出错");
+        },
+        success: function(data) {
+           $("#role_multiselect").html("");
+           $.each(data,function(index,item){
+          	  	 $("#role_multiselect").append('<option value='+item.id+'>'+item.name+'</option');
+           });
+           $('#staff_form')
+           .find('[name="role"]')
+               .multiselect({
+                   onChange: function(element, checked) {
+                       $('#staff_form').bootstrapValidator('revalidateField', 'role');
+                   }
+               }).end()
+           $("#staff_form").bootstrapValidator({
+        	excluded: ':disabled',
+       		fields: {
+       			role: {
+                       validators: {
+                           callback: {
+                               message: '必须为员工选一角色',
+                               callback: function(value, validator) {
+                                   var options = validator.getFieldElements('role').val();
+                                   return (options != null
+                                           && options.length >= 1);
+                               }
+                           }
+                       }
+                   },
+      			 name:{
+      				 validators: {
+   	                    notEmpty: {
+   	                        message: '此字段不能为空'
+   	                    },
+ 	                    callback: {
+                            message: '此用户名已经存在',
+                            callback: function(value, validator) {
+                         	    var result;
+                               	$.ajax({
+ 				                    cache: false,
+ 				                    type: "POST",
+ 				                    url:"user/hasName",
+ 				                    data:{name:value,id:$("#user_id_input").val()},
+ 				                    async: false,
+ 				                    error: function(request) {
+ 				                        alert("请求出错");
+ 				                    },
+ 				                    success: function(data) {
+ 				                       result = data.success;
+ 				                    	
+ 				                    },
+ 				                });	
+                                return !result;
+                            }
+                        }
+   	                }
+    			 },
+	   			 mobile:{
+	   				 validators: {
+	   	                    notEmpty: {
+	   	                        message: '此字段不能为空'
+	   	                    },
+		                    stringLength: {
+		                    	min: 11,
+		                        max: 11,
+		                        message: '手机号必须为11位'
+		                    },
+		                    regexp: {
+		                        regexp: /^[0-9]+$/,
+		                        message: '请填写数字'
+		                    },
+	 	                    callback: {
+	                            message: '此手机号已经存在',
+	                            callback: function(value, validator) {
+	                         	    var result;
+	                               	$.ajax({
+	 				                    cache: false,
+	 				                    type: "POST",
+	 				                    url:"user/hasMobile",
+	 				                    data:{name:value,id:$("#user_id_input").val()},
+	 				                    async: false,
+	 				                    error: function(request) {
+	 				                        alert("请求出错");
+	 				                    },
+	 				                    success: function(data) {
+	 				                       result = data.success;
+	 				                    	
+	 				                    },
+	 				                });	
+	                                return !result;
+	                            }
+	                        }
+	   	                }
+	   			 },
+	   			 unit_price:{
+		   			 validators: {
+		                    regexp: {
+		                        regexp: /^[0-9]+$/,
+		                        message: '请填写数字'
+		                   	 }
+	               	 }
+	   			},
+	   			 password:{
+	   				 validators: {
+	   	                    notEmpty: {
+	   	                        message: '此字段不能为空'
+	   	                    },
+		   	                 stringLength: {
+		                         min: 6,
+		                         max: 35,
+		                         message: '密码长度6~35位'
+		                     }
+	   	                }
+	   			 }
+	       		}
+	       	});
+           if(row){
+        	   populateForm(row);
+        	   if(row.roleIds){
+        		   var roles =row.roleIds.split(",");
+        		   $('#role_multiselect').multiselect('refresh')
+            	   for(var key in roles){
+            		   $('#role_multiselect').multiselect('select',roles[key]);
+            	   } 
+        	   }
+        	   
+           }
+        }
+    });
+	
+}
+var $table = $('#table');
+window.operateEvents = {
+        'click .edit': function (e, value, row, index) {
+        	fitForm(row);
+        	$("#staff_form").bootstrapValidator('cleanForm');
+        	$("#addstaffModalLabel").html("编辑员工信息");
+           	$("#btn_staff_model").click();
+           	formURL="user/"+row.id;
+        },
+        'click .remove': function (e, value, row, index) {
+        	ROW=row;
+        }
+    };
+    
+    
+    $(function(){
+    	$table.on('load-success.bs.table', function (e) {
+    		initConfirm();
+    	});
+    	$("#btn_staff").click(function(){
+    		$('form')[0].reset();
+    		fitForm();
+    		$("#staff_form").bootstrapValidator('cleanForm');
+    		$("#addstaffModalLabel").html("添加员工信息");
+    		$("#btn_staff_model").click();
+    		formURL="user/add";
+    	});
+    	
+    	$("#staff_form_submit").click(function(){
+    		
+    		var btn = $(this);
+    		$("#staff_form").bootstrapValidator('validate');
+    		if($("#staff_form").data("bootstrapValidator").isValid()){
+    			$.ajax({
+                    cache: false,
+                    type: "POST",
+                    url:formURL,
+                    data:$('#staff_form').serialize(),
+                    async: false,
+                    error: function(request) {
+                        alert("请求出错");
+                    },
+                    success: function(data) {
+                       var obj = eval(data);
+                       if(obj.success){
+                       	 $("#staff_form_dismiss").click();
+                       	 window.location.reload();
+                       }
+                    },
+                    beforeSend: function(){
+       	  	        	$(btn).attr("disabled","disabled");
+       	  	           },
+     	            complete: function(){
+     	          	    $(btn).removeAttr("disabled");
+     	            }
+                });
+    		}
+    		
+    	});
+    	$('.date-picker').datepicker({
+			autoclose:true,
+			todayHighlight: true,
+               language:"zh-CN", 
+               format:"yyyy-mm-dd" 
+			}).next().on(ace.click_event, function(){
+
+			$(this).prev().focus();
+		});
+    	
+    		var userDict = new Array(); 
+    		$("#name_input").typeahead({
+    			onSelect: function(item) {
+    				var row = userDict[item.value];
+    				$("#staff_form").bootstrapValidator('cleanForm');
+    				formURL="user/addRelationship/"+item.value;
+    				fitForm(row);
+    			},
+    			ajax: {
+    				url: "user/search",
+    				timeout: 500,
+    				displayField: "name",
+    				triggerLength: 1,
+    				method: "get",
+    				loadingClass: "loading-circle",
+    				preDispatch: function (query) {
+    					$("#name_input").after('<img class="load_img" style="position: absolute;right: 20px; top: 6px;" src="assets/image/5-121204193R7.gif"/>');
+    					return {
+    						param: query
+    					}
+    				},
+    				preProcess: function (data) {
+    					$("#name_input").parent().find(".load_img").css("display","none")
+    					$.each(data,function(index,item){
+    						userDict[item.id]=item;
+    					});
+    					return data;
+    				}
+    			}
+    		});
+    });
+    
+   
+
+</script>
+</body>
+</html>

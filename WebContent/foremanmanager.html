@@ -1,0 +1,704 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>工头管理</title>
+    <meta charset="utf-8" />
+    <link href="assets/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="assets/css/font-awesome.min.css" />
+    <link rel="stylesheet" href="assets/css/bootstrap-table.css" />
+    <link rel="stylesheet" href="assets/css/daterangepicker.css" />
+    <link rel="stylesheet" href="assets/css/editable.css" />
+    <style type="text/css">
+      .page-list .btn-group{display: none;}
+      .fixed-table-toolbar .input-group{margin-top:10px;padding-left:0px;}
+    </style>
+    <!--[if IE 7]>
+      <link rel="stylesheet" href="assets/css/font-awesome-ie7.min.css" />
+    <![endif]-->
+
+<!-- page specific plugin styles -->
+
+<!-- fonts -->
+
+<!-- ace styles -->
+
+<link rel="stylesheet" href="assets/css/ace.min.css" />
+
+
+<!--[if lte IE 8]>
+      <link rel="stylesheet" href="assets/css/ace-ie.min.css" />
+    <![endif]-->
+
+<!-- inline styles related to this page -->
+
+<!-- ace settings handler -->
+
+<script src="assets/js/ace-extra.min.js"></script>
+
+<!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+
+<!--[if lt IE 9]>
+    <script src="assets/js/html5shiv.js"></script>
+    <script src="assets/js/respond.min.js"></script>
+    <![endif]-->
+</head>
+<body>
+    <div class="foremanmanger_container" style="margin:20px;">
+    <div id="toolbar">
+            <button id="btn_add_foreman" type="button"  data-toggle="modal" data-target="#addForemanModal" title="添加工头" class="btn btn-success">添加工头</button>
+            <button id="btn_edit_foreman" type="button"  data-toggle="modal" data-target="#addForemanModal" style="display:none;">添加工头</button>
+            
+            <button id="btn_show_workers" type="button"  data-toggle="modal" data-target="#showWorkerModal" style="display:none;"></button>
+    </div>
+    <div class="col-sm-12">
+         <table id="table"
+               data-toolbar="#toolbar"
+               data-toggle="table"
+               data-pagination="true"
+               data-search="false"
+               data-page-size=15
+               data-side-pagination="server"
+               data-url="foremans">
+            <thead>
+            <tr>
+                <th data-field="id">编号</th>
+                <th data-field="name">姓名</th>
+                <th data-field="idcard">身份证</th>
+                <th data-field="mobile">手机号</th>
+                <th data-field="createDate">登记时间</th>
+                <th data-field="option" data-events="operateEvents" data-formatter="operateFormatter" >操作</th>
+            </tr>
+            </thead>
+        </table>
+      </div>
+    </div>
+    <div class="modal fade" id="addForemanModal" tabindex="-1" role="dialog" aria-labelledby="addForemanModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+            &times;
+          </button>
+          <h4 class="modal-title" id="addForemanModalLabel_h4"> 添加工头</h4>
+        </div>
+        <div class="modal-body">
+           <form id="foreman_form"  class="form-horizontal" role="form" style="margin-left:auto;margin-right:auto;border:2px solid #d2d6de; padding:20px 40px 20px 0px">
+              <fieldset>
+           
+
+          <div class="form-group">
+                  <label class="col-sm-3 control-label no-padding-right" style="text-align:right;">姓名</label>
+                  <div class="col-sm-9">
+                  <input type="text" id="foreman_name_input" autocomplete="off" name="name" placeholder="输入工头姓名" class="col-xs-12">   
+                  <span class="require_tip" title="必选项">*</span>	 
+                </div>
+          </div>
+         <div class="form-group">
+                  <label class="col-sm-3 control-label no-padding-right" style="text-align:right;">身份证</label>
+                  
+                  <div class="col-sm-9">
+                  <input type="text" name="idcard" placeholder="输入工头身份证" class="col-xs-12"> 
+                  <span class="require_tip" title="必选项">*</span>	   
+                </div>
+          </div>
+          <div class="form-group">
+                  <label class="col-sm-3 control-label no-padding-right" style="text-align:right;">手机号</label>
+                  <div class="col-sm-9">
+                  <input type="text" name="mobile" placeholder="输入工头手机号" class="col-xs-12">   
+                  <span class="require_tip" title="必选项">*</span>	 
+                </div>
+          </div>
+           <div class="form-group">
+                  <label class="col-sm-3 control-label no-padding-right" style="text-align:right;">领工信息</label>
+                  <div class="col-sm-9">
+                  <table id="worker_table">
+                    <thead>
+           			 <tr>
+                        <th>工种</th>
+                        <th>人数</th>
+                        <th>计薪方式</th>
+                        <th>单位</th>
+                        <th>单位薪水(元)</th>
+                      </tr>
+                     </thead>
+                     <tbody>
+                     </tbody>
+                  </table>
+                </div>
+          </div>
+          
+          <button type="button" id="add_worker_btn" style="float:right;"  title="添加工种信息" class="col-sm-1 btn btn-xs btn-success">                <i class="icon-plus bigger-120"></i>              </button>
+            </fieldset>
+             </form>
+        </div>
+        <div class="modal-footer">
+          
+          <button type="button" class="btn btn-default" id="foreman-dismiss_btn" data-dismiss="modal">关闭</button>
+          <button type="button" class="btn btn-primary" id="form_submit_btn"> 确认 </button>
+        </div>
+      </div><!-- /.modal-content -->
+    </div><!-- /.modal -->
+	</div>
+	
+	
+	
+	<div class="modal fade" id="showWorkerModal" tabindex="-1" role="dialog" aria-labelledby="showWorkerModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+            &times;
+          </button>
+          <h4 class="modal-title">
+          	工人信息
+          </h4>
+        </div>
+        <div class="modal-body">
+                  <table id="worker_table_show">
+                    <thead>
+           			 <tr>
+                        <th>工种</th>
+                        <th>人数</th>
+                        <th>计薪方式</th>
+                        <th>单位</th>
+                        <th>单位薪水(元)</th>
+                      </tr>
+                     </thead>
+                     <tbody>
+                     </tbody>
+                  </table>
+          </div>
+          
+        <div class="modal-footer">
+          
+          <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+        </div>
+      </div><!-- /.modal-content -->
+    </div><!-- /.modal -->
+	</div>
+<!--[if !IE]> -->
+<!-- <select class="form-control col-xs-10 col-sm-5">
+                  <option value="1">普工</option>
+                  <option value="2">钢筋工</option>
+                  <option value="3">水泥工</option>
+                </select> -->
+  <script type="text/javascript">
+    window.jQuery
+        || document
+            .write("<script src='assets/js/jquery-2.0.3.min.js'>"
+                + "<"+"/script>");
+  </script>
+
+  <!-- <![endif]-->
+
+  <!--[if IE]>
+<script type="text/javascript">
+ window.jQuery || document.write("<script src='assets/js/jquery-1.10.2.min.js'>"+"<"+"/script>");
+</script>
+<![endif]-->
+
+  <script type="text/javascript">
+    if ("ontouchend" in document)
+      document
+          .write("<script src='assets/js/jquery.mobile.custom.min.js'>"
+              + "<"+"/script>");
+  </script>
+  <script src="assets/bootstrap-table/bootstrap.min.js"></script>
+<script src="assets/bootstrap-table/bootstrap-table.js"></script>
+<script src="assets/bootstrap-table/bootstrap-table-editable.js"></script>
+<script src="assets/bootstrap-table/bootstrap-editable.js"></script>
+<script src="assets/js/bootstrap-typeahead.js"></script>
+<script src="assets/js/bootstrap-confirmation.min.js"></script>
+<script src="assets/js/bootstrapValidator.js"></script>
+<script>
+var foreman=0;
+var $table_foreman = $('#table');
+var $table_worker = $('#worker_table');
+var $table_worker_show = $('#worker_table_show');
+var formURL;
+var unit_type_data,unit_price_data,base_type_data;
+var ROW;
+function initConfirm(){
+	$('[data-toggle=confirmation-singleton]').confirmation({
+	    rootSelector: '[data-toggle=confirmation-singleton]',
+	    onConfirm: function() {
+	    	$.ajax({
+                cache: true,
+                type: "POST",
+                url:"foreman/delete/"+ROW.id,
+                async: false,
+                error: function(request) {
+                    alert("请求出错");
+                },
+                success: function(data) {
+                   if(data.success){
+                	   $table_foreman.bootstrapTable('remove', {
+                           field: 'id',
+                           values: [ROW.id]
+                       });
+                	   initConfirm();
+                   }
+                }
+            });
+	    }
+   });
+}
+
+function populateForm(data) { 
+	$.each(data, function(key, value){  
+	    var $ctrl = $('[name='+key+']'); 
+	    if($ctrl.is('select')){
+	        $("option",$ctrl).each(function(){
+	            if (this.value==value) { this.selected=true; }
+	        });
+	    }
+	    else {
+	        switch($ctrl.attr("type"))  
+	        {  
+	            case "text" :  case "hidden":  case "textarea":  
+	                $ctrl.val(value);   
+	                break;   
+	            case "radio" : case "checkbox":   
+	                $ctrl.each(function(){
+	                   if($(this).attr('value') == value) {  $(this).attr("checked",value); } });   
+	                break;
+	        } 
+	    }})} 
+   
+function work_responseHandler(res){
+	return {
+        rows: res,
+        total: 0
+      }
+}
+function fitForm(row,updateTable){
+	
+	
+
+	if(!unit_price_data){
+		unit_price_data=[];
+		$.ajax({
+            cache: true,
+            type: "GET",
+            url:"priceTypes/0",
+            async: false,
+            error: function(request) {
+                alert("请求出错");
+            },
+            success: function(data) {
+               $.each(data,function(index,item){
+           			unit_price_data.push({value:item.id,text:item.name});
+               });
+            }
+        });
+	}
+	if(!unit_type_data){
+		unit_type_data = []; 
+		$.ajax({
+            cache: true,
+            type: "GET",
+            url:"basetypes/0",
+            async: false,
+            error: function(request) {
+                alert("请求出错");
+            },
+            success: function(data) {
+               $.each(data,function(index,item){
+           	   	   unit_type_data.push({value:item.id,text:item.name});
+               });
+            }
+        });
+	}
+	
+	if(!base_type_data){
+		base_type_data = []; 
+		$.ajax({
+            cache: true,
+            type: "GET",
+            url:"basetypes/7",
+            async: false,
+            error: function(request) {
+                alert("请求出错");
+            },
+            success: function(data) {
+               $.each(data,function(index,item){
+            	   base_type_data.push({value:item.id,text:item.name});
+               });
+            }
+        });
+	}
+	
+	$table_worker.bootstrapTable({
+  		   pagination: false,
+           showRefresh: false,
+           search: false,
+           responseHandler:work_responseHandler,
+           columns:[
+          	 {
+          		 field: "workerType",
+                 title: "工种",
+                 editable: {
+                	 type: 'select',
+                	 source:unit_type_data,
+                	 validate:function(value){
+                		 if($.trim(value) == ''||!value){
+                			 return "此字段不能为空"
+                		 }
+                	 }
+                 }
+          	 },{
+          		 field: "count",
+                 title: "人数",
+                 editable: {
+                     type: 'text',
+                     title: '人数',
+                     validate: function (value) {
+                    	 if($.trim(value) == ''||!value) return '此字段不能为空';
+                    	 var numRegExp=/^[0-9]+$/
+                    	 if(!numRegExp.test(value)){
+                    		 return '请填写数字'
+                    	 }
+                     }
+                 }
+          	 },{
+          		 field: "basePriceType",
+                 title: "计薪方式",
+                 editable: {
+                	 type: 'select',
+                	 source:unit_price_data,
+                	 validate:function(value){
+                		 if($.trim(value) == ''||!value){
+                			 return "此字段不能为空"
+                		 }
+                	 }
+                 }
+          	 },{
+          		 field: "baseType",
+                 title: "单位",
+                 editable: {
+                	 type: 'select',
+                	 source:base_type_data,
+                	 validate:function(value){
+                		 if($.trim(value) == ''||!value){
+                			 return "此字段不能为空"
+                		 }
+                	 }
+                 }
+          	 },{
+          		 field: "price",
+                 title: "单位薪水(元)",
+                 editable:{
+                	 type: 'text',
+                	 validate:function(value){
+                		 if($.trim(value) == ''||!value){
+                			 return "此字段不能为空"
+                		 }
+                		 var numRegExp=/^[0-9]+$/
+                       	 if(!numRegExp.test(value)){
+                       		 return '请填写数字'
+                       	 }
+                	 }
+                 }
+          	 },{
+                 title: "操作",
+                 events:worker_operateEvents,
+                 formatter:worker_operateFormatter
+          	 }],
+          	 onClickCell: function (field, value, row, $element) {
+                 rowIndex = $element.closest('tr').attr('data-index');
+            	 $table_worker.find('tr[data-index="'+rowIndex+'"]  td:last-child').find('a[class="save"]').css("display","block");
+           		 $table_worker.find('tr[data-index="'+rowIndex+'"]  td:last-child').find('a[class="remove"]').css("display","none");
+             
+             }
+  	 });
+	$table_worker.bootstrapTable('refresh' ,{url: foreman+"/workers"});
+	if(row){
+		populateForm(row);
+	 }
+   };
+
+    $(function(){
+      $("#btn_add_foreman").click(function(){
+    	  $('form')[0].reset();
+    	  $("#foreman_name_input").removeAttr("disabled");
+    	  $("#foreman_form").bootstrapValidator('cleanForm');
+    	  foreman=1000000+Math.random().toFixed(3)*1000+$("#table").find("tr").length;
+    	  fitForm();
+    	  formURL=foreman+"/add";
+    	  $("#addForemanModalLabel_h4").html("添加工头信息");
+      });
+      $("#add_worker_btn").click(function(){
+    	  var data={
+      	  		"workerType":"",
+      	  		"count":"",
+      	  		"basePriceType":"",
+      	  		"baseType":"",
+      	  		"price":""
+      	  }
+    	  $("form").find('span[class="tip"]').remove();
+      	  $table_worker.bootstrapTable('append', data);
+      });
+      $("#foreman_form").bootstrapValidator({
+	    	  fields: {
+	 			 name:{
+	 				 validators: {
+		                    notEmpty: {
+		                        message: '此字段不能为空'
+		                    }
+		                }
+				 },
+				 idcard:{
+	 				 validators: {
+		                    notEmpty: {
+		                        message: '此字段不能为空'
+		                    },
+		                    stringLength: {
+		                    	min: 18,
+		                        max: 18,
+		                        message: '身份证必须为18位'
+		                    }
+		                }
+				 },
+				 mobile:{
+	 				 validators: {
+		                    notEmpty: {
+		                        message: '此字段不能为空'
+		                    },
+		                    stringLength: {
+		                    	min: 11,
+		                        max: 11,
+		                        message: '手机号必须为11位'
+		                    }
+		                }
+				 }
+	 		}
+      });
+      $("#form_submit_btn").click(function(){
+    	var btn = $(this);
+    	$("#foreman_name_input").removeAttr("disabled");
+    	$("#foreman_form").bootstrapValidator('validate');
+  		if($("#foreman_form").data("bootstrapValidator").isValid()){
+  			var mutl=false;
+				
+ 			if($("#worker_table").find("tr[data-index]").length>0){
+ 				mutl=true;
+ 			}
+  	  		if(mutl){
+	  	  		$.ajax({
+	                cache: false,
+	                type: "POST",
+	                url:formURL,
+	                data:$('#foreman_form').serialize(),
+	                async: false,
+	                error: function(request) {
+	                    alert("请求出错");
+	                },
+	                success: function(data) {
+	                   var obj = eval(data);
+	                   if(obj.success){
+	                   	 $("#foreman-dismiss_btn").click();
+	                   	 window.location.reload();
+	                   }
+	                },
+	   	            beforeSend: function(){
+	   	  	        	$(btn).attr("disabled","disabled");
+	   	  	           },
+	  	             complete: function(){
+	  	          	    $(btn).removeAttr("disabled");
+	  	             }
+	            });
+  	  		}else{
+  				$("#worker_table").parent().parent().parent().after("<span class='tip' style='color:red;font-size:12px;'>请填写计费信息</span>");
+  	  		}
+  		}
+      });
+    })
+window.worker_operateEvents = {
+    	'click .remove':function(e, value, row, index){
+    		if(row.id!=-1){
+    			$.ajax({
+                    cache: true,
+                    type: "POST",
+                    url:foreman+"/deleteWorkInfo/"+row.id,
+                    error: function(request) {
+                        alert("请求出错");
+                    },
+                    success: function(data) {
+                       if(data){
+                    	   $table_worker.bootstrapTable('remove', {
+                               field: 'id',
+                               values: [row.id]
+                           });
+                    	   //$table_worker.bootstrapTable('refresh');
+                       }
+                    }
+                });
+    		}else{
+    			 $table_worker.bootstrapTable('remove', {
+                     field: 'id',
+                     values: [row.id]
+                 });
+    			 //$table_worker.bootstrapTable('refresh');
+    		}
+    		
+    	},
+    	'click .save': function (e, value, row, index) {
+    		if($("#foreman_name_input").val().trim()==""){
+    			alert("请先填写工头信息");
+	       		return;
+	       	 }
+    		var URL=foreman+"/addWorkInfo";
+    		if (row.id&&row.id!=-1){
+    			URL=foreman+"/editWorkInfo/"+row.id;
+    		}
+    		$.ajax({
+                cache: true,
+                type: "POST",
+                url:URL,
+                data: row,
+                error: function(request) {
+                    alert("请求出错");
+                },
+                success: function(data) {
+                   if(!data.success){
+                	  alert(data.msg);
+                	  $table_worker.find('tr[data-index="'+index+'"]  td:last-child').find('a[class="save"]').css("display","block");
+                      $table_worker.find('tr[data-index="'+index+'"]  td:last-child').find('a[class="remove"]').css("display","block");
+                      row.id=-1;
+                   }else{
+                	 if($("#foreman_name_input").val().trim()!=""){
+                  		 $("#foreman_name_input").attr("disabled","disabled");
+                  	 }
+                	 row.id=data.msg;
+               		 $table_worker.find('tr[data-index="'+index+'"]  td:last-child').find('a[class="save"]').css("display","none");
+               		 $table_worker.find('tr[data-index="'+index+'"]  td:last-child').find('a[class="remove"]').css("display","block");
+                   }
+                }
+            });
+    	
+        }
+    }    
+window.operateEvents = {
+        'click .edit': function (e, value, row, index) {
+        	e.stopPropagation();
+        	$("#foreman_name_input").removeAttr("disabled");
+        	$("#foreman_form").bootstrapValidator('cleanForm');
+        	$("#addForemanModalLabel_h4").html("编辑工头信息");
+           	$("#btn_edit_foreman").click();
+           	formURL="foreman/edit/"+row.id;
+           	foreman=row.id;
+           	fitForm(row);
+        },
+        'click .detail':function(e, value, row, index){
+        	e.stopPropagation();
+        	foreman=row.id;
+        	$table_worker_show.bootstrapTable({
+        		pagination: false,
+                showRefresh: false,
+                search: false,
+                responseHandler:work_responseHandler,
+                columns:[
+               	 {
+               		 field: "workerType",
+                     title: "工种"
+               	 },{
+               		 field: "count",
+                     title: "人数"
+               	 },{
+               		 field: "basePriceType",
+                     title: "计薪方式"
+               	 },{
+               		 field: "baseType",
+                     title: "单位"
+               	 },{
+               		 field: "price",
+                     title: "单位薪水(元)"
+               	 }]
+        	 });
+        	if(foreman){
+            	$table_worker_show.bootstrapTable('refresh' ,{url: foreman+"/showWorkers"});
+        	}
+        	$("#btn_show_workers").click();
+        },
+        'click .remove': function (e, value, row, index) {
+        	e.stopPropagation();
+        	foreman=0;
+        	ROW=row;
+        }
+    };
+     
+    function operateFormatter(value, row, index) {
+        return [
+            '&nbsp;&nbsp;&nbsp;&nbsp;<a class="edit" href="javascript:void(0)" title="编辑">',
+            '<i class="icon-edit bigger-150"></i>',
+            '</a>',
+            '</a> &nbsp;&nbsp;&nbsp;&nbsp;',
+            '<a class="remove" data-toggle="confirmation-singleton" data-placement="left" href="javascript:void(0)" title="确认删除？">',
+            '<i class="icon-trash bigger-160"></i>', '</a>' ,
+            '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;',
+            '<a class="detail" style="display:none;" href="javascript:void(0)" title="详细">',
+            '<i class="icon-detail bigger-150"></i>']
+            .join('');
+      }  
+
+    function worker_operateFormatter(value, row, index) {
+    	if(row.id){
+    		 return [
+    	            '<a class="save" style="display:none" href="javascript:void(0)" title="保存">',
+    	            '<i class="icon-save bigger-160"></i>',
+    	            '</a>', 
+    	            '<a class="remove"  href="javascript:void(0)" title="删除">',
+    	            '<i class="icon-remove bigger-160"></i>', '</a>' ]
+    	            .join('');
+    	}else{
+        return [
+            '<a class="save" href="javascript:void(0)" title="保存">',
+            '<i class="icon-save bigger-160"></i>',
+            '</a>', 
+            '<a class="remove" style="display:none" href="javascript:void(0)" title="删除">',
+            '<i class="icon-remove bigger-160"></i>', '</a>' ]
+            .join('');
+    	}
+      }   
+    $(function(){
+    	$table_foreman.on('click','tr',function(){
+    		$(this).find('.detail')[0].click();
+    	});
+    	$table_foreman.on('load-success.bs.table', function (e) {
+    		initConfirm();
+    	});
+    	var foremanDict = new Array(); 
+		$("#foreman_name_input").typeahead({
+			onSelect: function(item) {
+				var row = foremanDict[item.value];
+				$("#foreman_form").bootstrapValidator('cleanForm');
+				formURL="foreman/addRelationship/"+item.value;
+				foreman=item.value;
+				fitForm(row,false);
+			},
+			ajax: {
+				url: "foreman/search?type=0",
+				timeout: 500,
+				displayField: "name",
+				triggerLength: 1,
+				method: "get",
+				loadingClass: "loading-circle",
+				preDispatch: function (query) {
+					$("#foreman_name_input").after('<img class="load_img" style="position: absolute;right: 20px; top: 6px;" src="assets/image/5-121204193R7.gif"/>');
+					return {
+						param: query
+					}
+				},
+				preProcess: function (data) {
+					$("#foreman_name_input").parent().find(".load_img").css("display","none")
+					$.each(data,function(index,item){
+						foremanDict[item.id]=item;
+					});
+					return data;
+				}
+			}
+		});
+    })
+  </script>
+</body>
+</html>

@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE generatorConfiguration PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN" "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
+<generatorConfiguration>
+      <classPathEntry location="D:\cc\project\luqiao\WebContent\WEB-INF\lib\mysql-connector-java-5.0.8-bin.jar" />
+     
+     <!-- <classPathEntry location="/Users/wangbing/Desktop/luqiao/WebContent/WEB-INF/lib/mysql-connector-java-5.0.8-bin.jar" />
+   -->
+  <context id="context1" targetRuntime="MyBatis3" >
+    <jdbcConnection connectionURL="jdbc:mysql://192.168.10.32:3306/NH01" 
+    				driverClass="com.mysql.jdbc.Driver" password="PMC_BJ_test_0118" userId="root" />
+    <javaModelGenerator targetPackage="com.core.entity" targetProject="luqiao" />
+    <javaClientGenerator targetPackage="com.core.mapper" targetProject="luqiao" type="ANNOTATEDMAPPER" />
+     <!--
+    <table schema="department" tableName="department" >
+    </table>
+    <table schema="role" tableName="role">
+    </table>
+    <table schema="menu" tableName="menu">
+    </table>
+    <table schema="role_menu" tableName="role_menu">
+    </table>
+   
+    <table schema="base_price_type" tableName="base_price_type">
+    </table>
+   
+    <table schema="price_fluctuation" tableName="price_fluctuation">
+    </table>  
+    
+    <table schema="person_account" tableName="person_account">
+    </table>
+    <table schema="work_charge_info" tableName="work_charge_info">
+    </table>
+    <table schema="supplier" tableName="supplier">
+    </table>
+    <table schema="material" tableName="material">
+    </table>
+   
+    <table schema="project_staff_role" tableName="project_staff_role">
+    </table>
+    
+   
+     <table schema="project_foreman" tableName="project_foreman">
+    </table>
+     <table schema="project_staff_price" tableName="project_staff_price">
+    </table>
+    
+    <table schema="unit_type_project" tableName="unit_type_project">
+    </table>
+   
+  
+    <table schema="project_supplier" tableName="project_supplier">
+    </table>  
+     <table schema="base_type" tableName="base_type">
+    </table>
+
+      <table schema="foreman" tableName="foreman">
+    </table>
+       <table schema="mechanics" tableName="mechanics">
+    </table>
+     <table schema="mechanics_project_owner" tableName="mechanics_project_owner">
+    </table>
+     <table schema="material" tableName="material">
+    </table>  
+     <table schema="material_type" tableName="material_type">
+    </table>
+    <table schema="material_spec" tableName="material_spec">
+    </table>
+      <table schema="unit_type_combination" tableName="unit_type_combination">
+    </table>
+     
+    
+      <table schema="loan_info" tableName="loan_info">
+    </table> 
+    
+    <table schema="day_book" tableName="day_book">
+    </table> 
+    
+    <table schema="staff" tableName="staff">
+    </table>
+         
+   <table schema="project" tableName="project" >
+    <table schema="day_book" tableName="day_book">
+    </table> 
+    
+    </table>
+     --> 
+     <!--  
+
+
+
+    
+       <table schema="token_info" tableName="token_info">
+    </table> 
+     <table schema="work_charge_info" tableName="work_charge_info">
+    </table>
+         <table schema="yuanguanhan" tableName="yuanguanhan">
+    </table>
+      <table schema="gaibanhan" tableName="gaibanhan">
+    </table>
+     <table schema="xianghan" tableName="xianghan">
+    </table>
+     <table schema="labor_cost" tableName="labor_cost">
+    </table> 
+      
+      <table schema="mechanics_price" tableName="mechanics_price">
+    </table>
+    <table schema="expense" tableName="expense">
+    </table> 
+    <table schema="oil" tableName="oil"> 
+    </table>
+     <table schema="material_received" tableName="material_received">
+    </table> 
+     -->
+   
+           <table schema="skip_material_price" tableName="skip_material_price">
+    </table>
+    
+     
+  </context>
+</generatorConfiguration>

@@ -1,0 +1,39 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Multiple Sort</title>
+    <meta charset="utf-8">
+    
+<link rel="stylesheet" href="assets/css/bootstrap.min.css">
+<link rel="stylesheet" href="assets/css/bootstrap-table.css" />
+<script src="assets/js/jquery.min.js"></script>
+<script src="assets/bootstrap-table/bootstrap.min.js"></script>
+<script src="assets/bootstrap-table/bootstrap-table.js"></script>
+<script src="assets/bootstrap-table/bootstrap-table-multiple-sort.js"></script>
+
+<script src="assets/bootstrap-table/bootstrap-table-export.js"></script>
+
+</head>
+<body>
+    <div class="container">
+        <h1>Multiple Sort</h1>
+        <table id="table"
+                data-toggle="table"
+                data-show-export="true"
+                data-search="true"
+                data-show-columns="true"
+                data-show-multi-sort="true" 
+                data-sort-priority='[{"sortName": "name","sortOrder":"desc"},{"sortName":"id","sortOrder":"desc"}]'
+                data-url="assets/bootstrap-table/data1.json">
+            <thead>
+            <tr>
+                <th data-field="id" data-sortable="true">id</th>
+                <th data-field="name" data-sortable="true">name</th>
+                <th data-field="price" data-sortable="true">price</th>
+            </tr>
+            </thead>
+        </table>
+    </div>
+</body>
+</html>

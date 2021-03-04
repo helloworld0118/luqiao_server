@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>报销</title>
+<link href="assets/css/bootstrap.min.css" rel="stylesheet" />
+<link rel="stylesheet" href="assets/css/font-awesome.min.css" />
+<link rel="stylesheet" href="assets/css/bootstrap-table.css" />
+<link rel="stylesheet" href="assets/css/daterangepicker.css" />
+<!--[if IE 7]>
+		  <link rel="stylesheet" href="assets/css/font-awesome-ie7.min.css" />
+		<![endif]-->
+
+<!-- page specific plugin styles -->
+
+<!-- fonts -->
+
+<!-- ace styles -->
+
+<link rel="stylesheet" href="assets/css/ace.min.css" />
+
+
+<!--[if lte IE 8]>
+		  <link rel="stylesheet" href="assets/css/ace-ie.min.css" />
+		<![endif]-->
+
+<!-- inline styles related to this page -->
+
+<!-- ace settings handler -->
+
+<script src="assets/js/ace-extra.min.js"></script>
+
+<!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+
+<!--[if lt IE 9]>
+		<script src="assets/js/html5shiv.js"></script>
+		<script src="assets/js/respond.min.js"></script>
+		<![endif]-->
+</head>
+<body>
+<div class="daybook_container">
+<div id="toolbar">
+	<div class="form-inline" role="form">
+       <button id="add_btn" type="button" style="display:none;"  data-toggle="modal" data-target="#adddaybookModal" title="添加收付日记账" class="btn btn-success">添加收付日记账</button>
+        <div style="float:right">
+	        <div class="form-group">
+	            <span>提交时间: </span>
+	            <input name="daterange" class="form-control" style="width:200px;" type="text" value="">
+	        </div>
+	        <div class="form-group">
+	            <span>账户名: </span>
+	            <input name="account" class="form-control" style="width:120px;" type="text" value="">
+	        </div>
+            <button id="search_btn" type="button"  title="搜索" class="btn btn-success">搜索</button>
+        </div>
+    </div>
+</div>
+	<table id="table"
+              data-toggle="table"
+              data-pagination="true"
+              data-side-pagination="server"
+              data-url="daybook/list">
+           <thead>
+           <tr>
+               <th data-field="voucherno">凭证号</th>
+               <th data-field="income">收入</th>
+               <th data-field="incomeTypeName">收入来源</th>
+               <th data-field="pay">支出</th>
+               <th data-field="payFor">支出对象</th>
+               <th data-field="account">账户名</th>
+               <th data-field="department">所在部门</th>
+               <th data-field="billTypeName">费用类型</th>
+               <th data-field="staffName">提交人</th>
+               <th data-field="date">日期</th>
+           </tr>
+           </thead>
+       </table>
+</div>
+
+<div class="modal fade" id="adddaybookModal" tabindex="-1" role="dialog" aria-labelledby="adddaybookModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+            &times;
+          </button>
+          <h4 class="modal-title" id="adddaybookModalLabel_h4"> 添加收付日记账</h4>
+        </div>
+        <div class="modal-body">
+           <form id="daybook_form"  class="form-horizontal" role="form" style="margin-left:auto;margin-right:auto;border:2px solid #d2d6de; padding:20px 50px;">
+             <fieldset>
+
+          <div class="form-group">
+                  <label class="col-sm-3 control-label no-padding-right" style="text-align:right;">收入(元)</label>
+                  <div class="col-sm-9">
+                  <input type="number"  name="income" placeholder="输入金额" class="col-xs-12">    
+                </div>
+          </div>
+         <div class="form-group">
+                  <label class="col-sm-3 control-label no-padding-right" style="text-align:right;">收入来源</label>
+                  <div class="col-sm-9">
+                   <select id="incomeType_select" name="incomeType"  class="form-control col-xs-10 col-sm-5">
+                   </select>
+                </div>
+          </div>
+              <div class="form-group">
+                  <label class="col-sm-3 control-label no-padding-right" style="text-align:right;">支出(元)</label>
+                  <div class="col-sm-9">
+                  <input type="number"  name="pay" placeholder="输入金额" class="col-xs-12">    
+                </div>
+          </div>
+            <div class="form-group">
+                  <label class="col-sm-3 control-label no-padding-right" style="text-align:right;">支出对象</label>
+                  <div class="col-sm-9">
+                 <textarea name="payFor"  class="form-control limited"  maxlength="100"></textarea>	
+                </div>
+          </div>
+           <div class="form-group">
+                  <label class="col-sm-3 control-label no-padding-right" style="text-align:right;">所在部门</label>
+                  <div class="col-sm-9">
+                   <select id="department_select" name="department"  class="form-control col-xs-10 col-sm-5">
+                   </select>
+                </div>
+          </div>
+           <div class="form-group">
+                  <label class="col-sm-3 control-label no-padding-right" style="text-align:right;">单据类型</label>
+                  <div class="col-sm-9">
+                   <select id="billType_select" name="billType"  class="form-control col-xs-10 col-sm-5">
+                   </select>
+                </div>
+          </div>
+            <div class="form-group">
+                  <label class="col-sm-3 control-label no-padding-right" style="text-align:right;">账户名</label>
+                  <div class="col-sm-9">
+                  <input type="text"  name="account" placeholder="输入账户名" class="col-xs-12">    
+                </div>
+          </div>
+            <div class="form-group">
+                  <label class="col-sm-3 control-label no-padding-right" style="text-align:right;">摘要</label>
+                  <div class="col-sm-9">
+                 <textarea name="summary"  class="form-control limited"  maxlength="100"></textarea>	
+                </div>
+          </div>
+    		 </fieldset>
+             </form>
+        </div>
+        <div class="modal-footer">
+          
+          <button type="button" class="btn btn-default" id="daybook_dismiss_btn" data-dismiss="modal">关闭</button>
+          <button type="button" class="btn btn-primary" id="form_submit_btn"> 确认 </button>
+        </div>
+      </div><!-- /.modal-content -->
+    </div><!-- /.modal -->
+	</div>
+</body>
+<!--[if !IE]> -->
+
+	<script type="text/javascript">
+		window.jQuery
+				|| document
+						.write("<script src='assets/js/jquery-2.0.3.min.js'>"
+								+ "<"+"/script>");
+	</script>
+
+	<!-- <![endif]-->
+
+	<!--[if IE]>
+<script type="text/javascript">
+ window.jQuery || document.write("<script src='assets/js/jquery-1.10.2.min.js'>"+"<"+"/script>");
+</script>
+<![endif]-->
+
+	<script type="text/javascript">
+		if ("ontouchend" in document)
+			document
+					.write("<script src='assets/js/jquery.mobile.custom.min.js'>"
+							+ "<"+"/script>");
+	</script>
+	<script src="assets/bootstrap-table/bootstrap.min.js"></script>
+<script src="assets/bootstrap-table/bootstrap-table.js"></script>
+<script src="assets/js/bootstrapValidator.js"></script>
+<script src="assets/js/date-time/moment.min.js"></script>
+<script src="assets/js/date-time/daterangepicker.min.js"></script>
+<script type="text/javascript">
+
+$(function(){
+	$.ajax({
+	    cache: true,
+        type: "GET",
+        url:"daybook/hasBtn",
+        async: false,
+        error: function(request) {
+            alert("请求出错");
+        },
+        success: function(data) {
+           if(data.success){
+        	   $("#add_btn").css("display","");
+           }else{
+        	   $("#add_btn").css("display","none");
+           }
+        }
+});
+	$("#daybook_form").bootstrapValidator({
+		fields: {
+			income:{
+				 validators: {
+	                    notEmpty: {
+	                        message: '此字段不能为空'
+	                    },
+	                    regexp: {
+	                        regexp: /^[0-9]+$/,
+	                        message: '请填写数字'
+	                    }
+	                }
+			 },
+			 incomeType:{
+				 validators: {
+	                    notEmpty: {
+	                        message: '此字段不能为空'
+	                    }
+	                }
+			 },
+			 pay:{
+				 validators: {
+	                    notEmpty: {
+	                        message: '此字段不能为空'
+	                    },
+	                    regexp: {
+	                        regexp: /^[0-9]+$/,
+	                        message: '请填写数字'
+	                    }
+	                }
+			 },
+			 payFor:{
+				 validators: {
+	                    notEmpty: {
+	                        message: '此字段不能为空'
+	                    }
+	                }
+			 },
+			 department:{
+				 validators: {
+	                    notEmpty: {
+	                        message: '此字段不能为空'
+	                    }
+	                }
+			 },
+			 account:{
+				 validators: {
+	                    notEmpty: {
+	                        message: '此字段不能为空'
+	                    }
+	                }
+			 }
+		}
+	
+	});
+	$("#add_btn").click(function(){
+		$.ajax({
+	        cache: true,
+	        type: "GET",
+	        url:"department/list",
+	        async: false,
+	        error: function(request) {
+	            alert("请求出错");
+	        },
+	        success: function(data) {
+	           var obj = eval(data);
+	           $("#department_select").html('');
+	           $.each(obj,function(index,item){
+	          	  	 $("#department_select").append('<option value='+item.id+'>'+item.name+'</option');
+	        	});
+		
+	        }
+	       
+	    })
+	    $.ajax({
+	        cache: true,
+	        type: "GET",
+	        url:"basetypes/3",
+	        async: false,
+	        error: function(request) {
+	            alert("请求出错");
+	        },
+	        success: function(data) {
+	           var obj = eval(data);
+	           $("#incomeType_select").html('');
+	           $.each(obj,function(index,item){
+	          	  	 $("#incomeType_select").append('<option value='+item.id+'>'+item.name+'</option');
+	        	});
+	        }
+	    });
+		 $.ajax({
+		        cache: true,
+		        type: "GET",
+		        url:"billType/list",
+		        async: false,
+		        error: function(request) {
+		            alert("请求出错");
+		        },
+		        success: function(data) {
+		           var obj = eval(data);
+		           $("#billType_select").html('');
+		           $.each(obj,function(index,item){
+		          	  	 $("#billType_select").append('<option value='+item.id+'>'+item.name+'</option');
+		        	});
+		        }
+		    });
+		//
+	});
+	$("#search_btn").click(function(){
+		var url = "daybook/list?daterange="+$("input[name='daterange']").val()+"&account="+$("input[name='account']").val(); 
+			
+		$("#table").bootstrapTable('refresh' ,{url: url});	
+	});
+	$("#form_submit_btn").click(function(){
+		var btn = $(this);
+		$("#daybook_form").bootstrapValidator('validate');
+  		if($("#daybook_form").data("bootstrapValidator").isValid()){
+  			$.ajax({
+  	            cache: false,
+  	            type: "POST",
+  	            url:"daybook/add",
+  	            data:$('#daybook_form').serialize(),
+  	            async: false,
+  	            error: function(request) {
+  	                alert("请求出错");
+  	            },
+  	            success: function(data) {
+  	               var obj = eval(data);
+  	               if(obj.success){
+  	               	 $("#daybook_dismiss_btn").click();
+  	               	 window.location.reload();
+  	               }
+  	            },
+  	          beforeSend: function(){
+  	        	$(btn).attr("disabled","disabled");
+  	           },
+             complete: function(){
+          	    $(btn).removeAttr("disabled");
+             }
+  	        });
+  		}
+		
+	});
+	
+	
+	$('input[name="daterange"]').daterangepicker(  
+            {  
+                // startDate: moment().startOf('day'),  
+                //endDate: moment(),  
+                //minDate: '01/01/2012',    //最小时间  
+               // maxDate : moment(), //最大时间   
+                dateLimit : {  
+                    days : 30  
+                }, //起止时间的最大间隔  
+                //showDropdowns : true,  
+                showWeekNumbers : false, //是否显示第几周  
+                //timePicker : true, //是否显示小时和分钟  
+                //timePickerIncrement : 60, //时间的增量，单位为分钟  
+                timePicker12Hour : false, //是否使用12小时制来显示时间  
+                 ranges : {  
+                    //'最近1小时': [moment().subtract('hours',1), moment()],  
+                    '今天': [moment().startOf('day'), moment()],  
+                    '昨天': [moment().subtract('days', 1).startOf('day'), moment().subtract('days', 1).endOf('day')],  
+                    '最近7天': [moment().subtract('days', 6), moment()],  
+                    '最近30天': [moment().subtract('days', 29), moment()]  
+                },   
+                opens : 'left', //日期选择框的弹出位置  
+                buttonClasses : [ 'btn btn-default' ],  
+                applyClass : 'btn-small btn-primary blue',  
+                cancelClass : 'btn-small',  
+                format : 'YYYY-MM-DD', //控件中from和to 显示的日期格式  
+                separator : ' to ',  
+                locale : {  
+                    applyLabel : '确定',  
+                    cancelLabel : '取消',  
+                    fromLabel : '起始时间',  
+                    toLabel : '结束时间',  
+                    customRangeLabel : '自定义',  
+                    daysOfWeek : [ '日', '一', '二', '三', '四', '五', '六' ],  
+                    monthNames : [ '一月', '二月', '三月', '四月', '五月', '六月',  
+                            '七月', '八月', '九月', '十月', '十一月', '十二月' ],  
+                    firstDay : 1  
+                }  
+            }, function(start, end, label) {//格式化日期显示框  
+             $('input[name="daterange"]').html(start.format('YYYY-MM-DD') + ' - ' + end.format('YYYY-MM-DD'));  
+           }); 
+});
+</script>
+
+</html>

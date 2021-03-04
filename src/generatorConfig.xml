@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE generatorConfiguration PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN" "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
+<generatorConfiguration>
+    <classPathEntry location="C:\Users\bing.wang\Desktop\project\luqiao\WebContent\WEB-INF\lib\mysql-connector-java-5.0.8-bin.jar" />
+
+  <context id="context1" defaultModelType="hierarchical" targetRuntime="MyBatis3Simple" >
+    <jdbcConnection connectionURL="jdbc:mysql://192.168.10.32:3306/luqiao" 
+    				driverClass="com.mysql.jdbc.Driver" password="PMC_BJ_test_0118" userId="root" />
+    <javaModelGenerator targetPackage="com.core.entity.main" targetProject="luqiao" />
+    <javaClientGenerator targetPackage="com.core.mapper" targetProject="luqiao" type="ANNOTATEDMAPPER" />
+    <table schema="module" tableName="module" enableCountByExample="false" enableUpdateByExample="false"  
+            enableDeleteByExample="false" enableSelectByExample="false"  
+            selectByExampleQueryId="false">
+    </table>
+    <table schema="enterprise" tableName="enterprise" >
+    </table>
+    <table schema="module_meal" tableName="module_meal" >
+    </table>
+    <table schema="enterprise_meal" tableName="enterprise_meal" >
+    </table>
+    <table schema="recharge" tableName="recharge">
+    </table>
+  </context>
+</generatorConfiguration>

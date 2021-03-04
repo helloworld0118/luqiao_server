@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>账务管理</title>
+    <link href="assets/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="assets/css/font-awesome.min.css" />
+    <link rel="stylesheet" href="assets/css/bootstrap-table.css" />
+    <link rel="stylesheet" href="assets/css/daterangepicker.css" />
+    <style type="text/css">
+      .page-list .btn-group{display: none;}
+      .fixed-table-toolbar .input-group{margin-top:10px;padding-left:0px;}
+.fa-remove:before, .fa-close:before, .fa-times:before {
+	font-size: 15px;
+	
+}
+
+</style>
+<!--[if IE 7]>
+		  <link rel="stylesheet" href="assets/css/font-awesome-ie7.min.css" />
+		<![endif]-->
+
+<!-- page specific plugin styles -->
+
+<!-- fonts -->
+
+<!-- ace styles -->
+
+<link rel="stylesheet" href="assets/css/ace.min.css" />
+
+
+<!--[if lte IE 8]>
+		  <link rel="stylesheet" href="assets/css/ace-ie.min.css" />
+		<![endif]-->
+
+<!-- inline styles related to this page -->
+
+<!-- ace settings handler -->
+
+<script src="assets/js/ace-extra.min.js"></script>
+
+<!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+
+<!--[if lt IE 9]>
+		<script src="assets/js/html5shiv.js"></script>
+		<script src="assets/js/respond.min.js"></script>
+		<![endif]-->
+</head>
+<body >
+<div class="finance_container" style="margin:20px;">
+
+
+<div class="row">
+									<div class="col-sm-12">
+										<div class="tabbable">
+											<ul class="nav nav-tabs" id="finance_tab">
+												<li class="active" style="width:120px;">
+													<a data-toggle="tab" href="#expense">
+														报销
+													</a>
+												</li>
+
+												<li style="width:120px;">
+													<a data-toggle="tab" href="#loanInfo">
+														借款
+													</a>
+												</li>
+
+												<li style="width:120px;">
+													<a data-toggle="tab" href="#dayBook">
+														收付日记账
+													</a>
+												</li>
+											</ul>
+
+											<div class="tab-content">
+												<div id="expense" class="tab-pane in active">
+												<iframe src="expense.html"
+												 	width="100%" height="100%" frameborder="no" border="0" marginwidth="0" marginheight="0" scrolling="yes" allowtransparency="yes" class="tab_iframe" style="height: 894px; width: 100%; display: inline-block;"
+												 	></iframe>
+												</div>
+												<div id="loanInfo" class="tab-pane">
+												<iframe src="loaninfo.html"
+												 	width="100%" height="100%" frameborder="no" border="0" marginwidth="0" marginheight="0" scrolling="yes" allowtransparency="yes" class="tab_iframe" style="height: 894px; width: 100%; display: inline-block;"
+												 	></iframe>
+												</div>
+												<div id="dayBook" class="tab-pane">
+												<iframe src="daybook.html"
+												 	width="100%" height="100%" frameborder="no" border="0" marginwidth="0" marginheight="0" scrolling="yes" allowtransparency="yes" class="tab_iframe" style="height: 894px; width: 100%; display: inline-block;"
+												 	></iframe>
+												</div>
+
+							
+											</div>
+										</div>
+
+
+</div>
+	</div>
+	</div>
+
+</body>
+<script type="text/javascript">
+		var showdataRangePicker=true;
+</script>
+<!--[if !IE]> -->
+
+	<script type="text/javascript">
+		window.jQuery
+				|| document
+						.write("<script src='assets/js/jquery-2.0.3.min.js'>"
+								+ "<"+"/script>");
+	</script>
+
+	<!-- <![endif]-->
+
+	<!--[if IE]>
+<script type="text/javascript">
+ window.jQuery || document.write("<script src='assets/js/jquery-1.10.2.min.js'>"+"<"+"/script>");
+</script>
+<![endif]-->
+
+	<script type="text/javascript">
+		if ("ontouchend" in document)
+			document
+					.write("<script src='assets/js/jquery.mobile.custom.min.js'>"
+							+ "<"+"/script>");
+	</script>
+	<script src="assets/bootstrap-table/bootstrap.min.js"></script>
+<script src="assets/bootstrap-table/bootstrap-table.js"></script>
+<script src="assets/js/date-time/moment.min.js"></script>
+<script src="assets/js/date-time/daterangepicker.min.js"></script>
+
+<script>
+
+	$(function() {
+    $('input[name="daterange"]').daterangepicker();
+});
+    var $table = $('#table');
+
+    $(function () {
+    });
+</script>
+</html>

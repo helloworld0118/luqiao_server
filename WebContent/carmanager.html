@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>车辆管理</title>
+    <meta charset="utf-8" />
+    <link href="assets/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="assets/css/font-awesome.min.css" />
+    <link rel="stylesheet" href="assets/css/bootstrap-table.css" />
+    <link rel="stylesheet" href="assets/css/daterangepicker.css" />
+    <link rel="stylesheet" href="assets/css/editable.css" />
+    <style type="text/css">
+      .page-list .btn-group{display: none;}
+      .fixed-table-toolbar .input-group{margin-top:10px;padding-left:0px;}
+    </style>
+    <!--[if IE 7]>
+      <link rel="stylesheet" href="assets/css/font-awesome-ie7.min.css" />
+    <![endif]-->
+
+<!-- page specific plugin styles -->
+
+<!-- fonts -->
+
+<!-- ace styles -->
+
+<link rel="stylesheet" href="assets/css/ace.min.css" />
+
+
+<!--[if lte IE 8]>
+      <link rel="stylesheet" href="assets/css/ace-ie.min.css" />
+    <![endif]-->
+
+<!-- inline styles related to this page -->
+
+<!-- ace settings handler -->
+
+<script src="assets/js/ace-extra.min.js"></script>
+
+<!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+
+<!--[if lt IE 9]>
+    <script src="assets/js/html5shiv.js"></script>
+    <script src="assets/js/respond.min.js"></script>
+    <![endif]-->
+</head>
+</head>
+<body>
+    <div class="carmanger_container" style="margin:20px;">
+    <div id="toolbar">
+            <button id="btn_add_car" type="button"  data-toggle="modal" data-target="#addcarModal" title="添加车辆" class="btn btn-success">添加车辆</button>
+    </div>
+    <div class="col-sm-12">
+         <table id="table"
+               data-toolbar="#toolbar"
+               data-toggle="table"
+               data-pagination="true"
+               data-search="false"
+               data-page-size=15
+               data-side-pagination="server"
+               data-url="cars">
+            <thead>
+            <tr>
+                <th data-field="plateNumber">车牌号</th>
+                <th data-field="name">车主姓名</th>
+                <th data-field="mobile">车主手机</th>
+                <th data-field="idcard">车主身份证</th>
+                <th data-field="driverName">司机姓名</th>
+                <th data-field="driverMobile">司机手机</th>
+                <th data-field="driverIdcard">司机身份证</th>
+                <th data-field="createDate">登记时间</th>
+                <th data-field="basePriceTypeName">计费方式</th>
+                <th data-field="price">单位金额</th>
+                <th data-field="option" data-events="operateEvents" data-formatter="operateFormatter" >操作</th>
+            </tr>
+            </thead>
+        </table>
+      </div>
+    </div>
+    <div class="modal fade" id="addcarModal" tabindex="-1" role="dialog" aria-labelledby="addcarModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+            &times;
+          </button>
+          <h4 class="modal-title" id="addcarModalLabel_h4"> 添加车辆</h4>
+        </div>
+        <div class="modal-body">
+           <form id="car_form"  class="form-horizontal" role="form" style="margin-left:auto;margin-right:auto;border:2px solid #d2d6de; padding:20px 40px 20px 0px;">
+              <fieldset>
+            <div class="form-group">
+                  <label class="col-sm-3 control-label no-padding-right" style="text-align:right;">车牌号</label>
+                  <div class="col-sm-9">
+                  <input type="text" id="car_plateNumber_input" autocomplete="off"  name="plateNumber" placeholder="输入车牌号" class="col-xs-12">    
+                  <input type="hidden" name="type" value="1"  />    
+                  <input type="hidden" name="mType" value="0"  />    
+                  <input type="hidden" id="car_carId_input" name="carId" value="0" />    
+                   <input type="hidden" name="createDate" />    
+                  <span class="require_tip" title="必选项">*</span>	
+                </div>
+          </div>
+
+          <div class="form-group">
+                  <label class="col-sm-3 control-label no-padding-right" style="text-align:right;">车主姓名</label>
+                  <div class="col-sm-9">
+                  <input type="text" id="car_foreman_name_input" autocomplete="off"  name="name" placeholder="输入车主姓名" class="col-xs-12">    
+				  <input type="hidden" id="foremanId_input" name="foremanId" value="0" />
+				  <span class="require_tip" title="必选项">*</span>	
+                </div>
+          </div>
+            <div class="form-group">
+                  <label class="col-sm-3 control-label no-padding-right" style="text-align:right;">车主手机号</label>
+                  <div class="col-sm-9">
+                  <input type="text" name="mobile" placeholder="输入车主手机号" class="col-xs-12">    
+                  <span class="require_tip" title="必选项">*</span>	
+                </div>
+          </div>
+         <div class="form-group">
+                  <label class="col-sm-3 control-label no-padding-right" style="text-align:right;">车主身份证</label>
+                  <div class="col-sm-9">
+                  <input type="text" name="idcard" placeholder="输入车主身份证" class="col-xs-12">    
+                </div>
+          </div>
+                <div class="form-group">
+                  <label class="col-sm-3 control-label no-padding-right" style="text-align:right;">司机姓名</label>
+                  <div class="col-sm-9">
+                  <input type="text"  name="driverName" placeholder="输入司机姓名" class="col-xs-12">  
+                  <span class="require_tip" title="必选项">*</span>	  
+                </div>
+          </div>
+            <div class="form-group">
+                  <label class="col-sm-3 control-label no-padding-right" style="text-align:right;">司机手机号</label>
+                  <div class="col-sm-9">
+                  <input type="text" name="driverMobile" placeholder="输入司机手机号" class="col-xs-12"> 
+                  <span class="require_tip" title="必选项">*</span>	   
+                </div>
+          </div>
+         <div class="form-group">
+                  <label class="col-sm-3 control-label no-padding-right" style="text-align:right;">司机身份证</label>
+                  <div class="col-sm-9">
+                  <input type="text" name="driverIdcard" placeholder="输入司机身份证" class="col-xs-12">    
+                </div>
+          </div>
+            <div class="form-group">
+                  <label class="col-sm-3 control-label no-padding-right" style="text-align:right;">计薪方式</label>
+                  <div class="col-sm-9">
+                   	<select id="basePriceType_select" class="form-control col-xs-10 col-sm-5" name="basePriceType"></select>
+                </div>
+          </div>
+             <div class="form-group">
+                  <label class="col-sm-3 control-label no-padding-right" style="text-align:right;">单位薪水(元)</label>
+                  <div class="col-sm-9">
+         	          <input type="text"   id="price_input" name="price" placeholder="单位薪水" class="col-xs-12">    
+                </div>
+          </div>
+            </fieldset>
+             </form>
+        </div>
+        <div class="modal-footer">
+          
+          <button type="button" class="btn btn-default" id="car-dismiss_btn" data-dismiss="modal">关闭</button>
+          <button type="button" class="btn btn-primary" id="form_submit_btn"> 确认 </button>
+        </div>
+      </div><!-- /.modal-content -->
+    </div><!-- /.modal -->
+	</div>
+	
+	
+	
+<!--[if !IE]> -->
+  <script type="text/javascript">
+    window.jQuery
+        || document
+            .write("<script src='assets/js/jquery-2.0.3.min.js'>"
+                + "<"+"/script>");
+  </script>
+
+  <!-- <![endif]-->
+
+  <!--[if IE]>
+<script type="text/javascript">
+ window.jQuery || document.write("<script src='assets/js/jquery-1.10.2.min.js'>"+"<"+"/script>");
+</script>
+<![endif]-->
+
+  <script type="text/javascript">
+    if ("ontouchend" in document)
+      document
+          .write("<script src='assets/js/jquery.mobile.custom.min.js'>"
+              + "<"+"/script>");
+  </script>
+<script src="assets/bootstrap-table/bootstrap.min.js"></script>
+<script src="assets/bootstrap-table/bootstrap-table.js"></script>
+<script src="assets/bootstrap-table/bootstrap-table-editable.js"></script>
+<script src="assets/bootstrap-table/bootstrap-editable.js"></script>
+<script src="assets/js/bootstrap-typeahead.js"></script>
+<script src="assets/js/bootstrapValidator.js"></script>
+<script src="assets/js/bootstrap-confirmation.min.js"></script>
+<script>
+formURL="addCar"
+var unit_price_data;
+$table_car=$("#table");
+var ROW;
+function initConfirm(){
+	$('[data-toggle=confirmation-singleton]').confirmation({
+	    rootSelector: '[data-toggle=confirmation-singleton]',
+	    onConfirm: function() {
+	    	$.ajax({
+                cache: true,
+                type: "POST",
+                url:"car/delete/"+ROW.id,
+                data:{foreman:ROW.foremanId},
+                async: false,
+                error: function(request) {
+                    alert("请求出错");
+                },
+                success: function(data) {
+                   if(data.success){
+                	   $table_car.bootstrapTable('remove', {
+                           field: 'id',
+                           values: [ROW.id]
+                       });
+                	   initConfirm();
+                   }
+                }
+            });
+	    }
+   });
+}
+
+function populateForm(data) { 
+	$.each(data, function(key, value){  
+    	var $ctrl = $('[name='+key+']'); 
+	    if($ctrl.is('select')){
+	        $("option",$ctrl).each(function(){
+	            if (this.value==value) { this.selected=true; }
+	        });
+	    }
+	    else {
+	        switch($ctrl.attr("type"))  
+	        {  
+	            case "text" : case "hidden": case "textarea":  
+            		$ctrl.val(value);   
+	                break;   
+	            case "radio" : case "checkbox":   
+	                $ctrl.each(function(){
+	                   if($(this).attr('value') == value) {  $(this).attr("checked",value); } });   
+	                break;
+	        } 
+	     }}
+	)
+} 
+function fitForm(){
+	if(!unit_price_data){
+		unit_price_data=[];
+		$.ajax({
+            cache: true,
+            type: "GET",
+            url:"priceTypes/2",
+            async: false,
+            error: function(request) {
+                alert("请求出错");
+            },
+            success: function(data) {
+               $.each(data,function(index,item){
+           			unit_price_data.push({value:item.id,text:item.name});
+               });
+            }
+        });
+	}
+	$("#basePriceType_select").html("");
+	$.each(unit_price_data,function(index,item){
+		if(item.text=="不计费"){
+			$("#basePriceType_select").append('<option value='+item.value+' selected>'+item.text+'</option');
+		}else{
+			$("#basePriceType_select").append('<option value='+item.value+'>'+item.text+'</option');
+		}
+	})
+};	    
+	    
+function operateFormatter(value, row, index) {
+    return [
+        '&nbsp;&nbsp;&nbsp;&nbsp;<a class="edit" href="javascript:void(0)" title="编辑">',
+        '<i class="icon-edit bigger-150"></i>',
+        '</a>',
+        '</a> &nbsp;&nbsp;&nbsp;&nbsp;',
+        '<a class="remove" data-toggle="confirmation-singleton" data-placement="left" href="javascript:void(0)" title="删除">',
+        '<i class="icon-trash bigger-160"></i>', '</a>']
+        .join('');
+  }  
+  
+window.operateEvents = {
+        'click .edit': function (e, value, row, index) {
+        	$('form')[0].reset();
+        	e.stopPropagation();
+        	$("#car_form").bootstrapValidator('cleanForm');
+        	$("#addcarModalLabel_h4").html("编辑车辆信息");
+           	$("#btn_add_car").click();
+           	formURL="car/edit/"+row.id;
+           	fitForm();
+           	populateForm(row);
+           	if($("#basePriceType_select").find("option:selected").text()=="不计费"){
+    			$("#price_input").val("");
+    			$("#price_input").attr("disabled","disabled");
+    		}else{
+    			$("#price_input").removeAttr("disabled")
+    		}
+        },
+        'click .remove': function (e, value, row, index) {
+        	e.stopPropagation();
+        	ROW=row;
+        }
+    };
+    
+    $(function(){
+    	$table_car.on('load-success.bs.table', function (e) {
+    		initConfirm();
+    	});
+    	$("#basePriceType_select").change(function(){
+    		if($(this).find("option:selected").text()=="不计费"){
+    			$("#price_input").val("");
+    			$("#price_input").attr("disabled","disabled");
+    		}else{
+    			$("#price_input").removeAttr("disabled")
+    		}
+    	});
+    	$("#btn_add_car").click(function(){
+    		$('form')[0].reset();
+    		$("#car_form").bootstrapValidator('cleanForm');
+    		formURL="addCar";
+    		fitForm();
+    	});
+    	$("#car_form").bootstrapValidator({
+    		fields: {
+    			plateNumber:{
+   				 validators: {
+	                    notEmpty: {
+	                        message: '此字段不能为空'
+	                    }
+	                }
+			 },
+			 name:{
+   				 validators: {
+	                    notEmpty: {
+	                        message: '此字段不能为空'
+	                    }
+	                }
+			 },
+			 mobile:{
+   				 validators: {
+	                    notEmpty: {
+	                        message: '此字段不能为空'
+	                    },
+	                    stringLength: {
+	                    	min: 11,
+	                        max: 11,
+	                        message: '手机号必须为11位'
+	                    },
+	                    regexp: {
+	                        regexp: /^[0-9]+$/,
+	                        message: '请填写数字'
+	                    }
+	                }
+			 },
+			 driverName:{
+   				 validators: {
+	                    notEmpty: {
+	                        message: '此字段不能为空'
+	                    }
+	                }
+			 },
+			 price:{
+				 validators: {
+	                    notEmpty: {
+	                        message: '此字段不能为空'
+	                    },
+	                    regexp: {
+	                        regexp: /^[0-9]+$/,
+	                        message: '请填写数字'
+	                    }
+	                }
+			 },driverMobile:{
+   				 validators: {
+	                    notEmpty: {
+	                        message: '此字段不能为空'
+	                    },
+	                    stringLength: {
+	                    	min: 11,
+	                        max: 11,
+	                        message: '手机号必须为11位'
+	                    },
+	                    regexp: {
+	                        regexp: /^[0-9]+$/,
+	                        message: '请填写数字'
+	                    }
+	                }
+			 }
+   		}
+   	});
+    	$("#form_submit_btn").click(function(){
+    		 var btn = $(this);
+    		 $("#car_form").bootstrapValidator('validate');
+    	  	 if($("#car_form").data("bootstrapValidator").isValid()){
+    	  			$.ajax({
+    	                cache: false,
+    	                type: "POST",
+    	                url:formURL,
+    	                data:$('#car_form').serialize(),
+    	                async: false,
+    	                error: function(request) {
+    	                    alert("请求出错");
+    	                },
+    	                success: function(data) {
+    	                   if(data.success){
+    	                   	 $("#foreman-dismiss_btn").click();
+    	                   	 window.location.reload();
+    	                   }
+    	                },
+   	    	            beforeSend: function(){
+   	    	  	        	$(btn).attr("disabled","disabled");
+   	    	  	           },
+   	    	             complete: function(){
+   	    	          	    $(btn).removeAttr("disabled");
+   	    	             }
+    	            });
+    	  		}
+      });
+      	var carDict = new Array(); 
+    	$("#car_plateNumber_input").typeahead({
+			onSelect: function(item) {
+				var row = carDict[item.value];
+				$("#car_form").bootstrapValidator('cleanForm');
+				$("#car_carId_input").val(item.value);
+				formURL="car/addRelationship";
+				populateForm(row);
+			},
+			ajax: {
+				url: "mechanics/search?type=0",
+				timeout: 500,
+				displayField: "plateNumber",
+				triggerLength: 1,
+				method: "get",
+				loadingClass: "loading-circle",
+				preDispatch: function (query) {
+					$("#car_plateNumber_input").after('<img class="load_img" style="position: absolute;right: 20px; top: 6px;" src="assets/image/5-121204193R7.gif"/>');
+
+					return {
+						param: query
+					}
+				},
+				preProcess: function (data) {
+					$("#car_plateNumber_input").parent().find(".load_img").css("display","none")
+
+					$.each(data,function(index,item){
+						carDict[item.id]=item;
+					});
+					return data;
+				}
+			}
+		});
+    	var carForemanDict = new Array(); 
+    	$("#car_foreman_name_input").typeahead({
+			onSelect: function(item) {
+				$("#car_form").bootstrapValidator('cleanForm');
+				var row = carForemanDict[item.value];
+				$("#foremanId_input").val(item.value);
+				formURL="car/addRelationship";
+				populateForm(row);
+			},
+			ajax: {
+				url: "foreman/search?type=1",
+				timeout: 500,
+				displayField: "name",
+				triggerLength: 1,
+				method: "get",
+				loadingClass: "loading-circle",
+				preDispatch: function (query) {
+					$("#car_foreman_name_input").after('<img class="load_img" style="position: absolute;right: 20px; top: 6px;" src="assets/image/5-121204193R7.gif"/>');
+
+					return {
+						param: query
+					}
+				},
+				preProcess: function (data) {
+					$("#car_foreman_name_input").parent().find(".load_img").css("display","none")
+
+					$.each(data,function(index,item){
+						carForemanDict[item.id]=item;
+					});
+					return data;
+				}
+			}
+		});
+    });
+</script>
+</body>
+</html>

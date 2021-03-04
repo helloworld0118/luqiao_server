@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>拉料车管理</title>
+    <meta charset="utf-8" />
+    <link href="assets/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="assets/css/font-awesome.min.css" />
+    <link rel="stylesheet" href="assets/css/bootstrap-table.css" />
+    <link rel="stylesheet" href="assets/css/daterangepicker.css" />
+    <link rel="stylesheet" href="assets/css/editable.css" />
+    <style type="text/css">
+      .page-list .btn-group{display: none;}
+      .fixed-table-toolbar .input-group{margin-top:10px;padding-left:0px;}
+    </style>
+    <!--[if IE 7]>
+      <link rel="stylesheet" href="assets/css/font-awesome-ie7.min.css" />
+    <![endif]-->
+
+<!-- page specific plugin styles -->
+
+<!-- fonts -->
+
+<!-- ace styles -->
+
+<link rel="stylesheet" href="assets/css/ace.min.css" />
+
+
+<!--[if lte IE 8]>
+      <link rel="stylesheet" href="assets/css/ace-ie.min.css" />
+    <![endif]-->
+
+<!-- inline styles related to this page -->
+
+<!-- ace settings handler -->
+
+<script src="assets/js/ace-extra.min.js"></script>
+
+<!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+
+<!--[if lt IE 9]>
+    <script src="assets/js/html5shiv.js"></script>
+    <script src="assets/js/respond.min.js"></script>
+    <![endif]-->
+</head>
+<body>
+    <div class="skipmanager_container" style="margin:20px;">
+    <div id="toolbar">
+            <button id="btn_add_skip" type="button"  data-toggle="modal" data-target="#addskipModal" title="添加拉料车" class="btn btn-success">添加拉料车</button>
+            <button id="btn_edit_skip" type="button"  data-toggle="modal" data-target="#addskipModal" style="display:none;">编辑拉料车</button>
+            
+            <button id="btn_show_workers" type="button"  data-toggle="modal" data-target="#showWorkerModal" style="display:none;"></button>
+    </div>
+    <div class="col-sm-12">
+         <table id="table"
+               data-toolbar="#toolbar"
+               data-toggle="table"
+               data-pagination="true"
+               data-search="false"
+               data-page-size=15
+               data-side-pagination="server"
+               data-url="skips">
+            <thead>
+            <tr>
+                <th data-field="plateNumber">车牌号</th>
+                <th data-field="name">车主姓名</th>
+                <th data-field="mobile">车主手机</th>
+                <th data-field="idcard">车主身份证</th>
+                <th data-field="capacity">斗容量</th>
+                <th data-field="driverName">司机姓名</th>
+                <th data-field="driverMobile">司机手机</th>
+                <th data-field="driverIdcard">司机身份证</th>
+                <th data-field="createDate">登记时间</th>
+                <th data-field="option" data-events="operateEvents" data-formatter="operateFormatter" >操作</th>
+            </tr>
+            </thead>
+        </table>
+      </div>
+    </div>
+    <div class="modal fade" id="addskipModal" tabindex="-1" role="dialog" aria-labelledby="addskipModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+            &times;
+          </button>
+          <h4 class="modal-title" id="addskipModalLabel_h4"> 添加工头</h4>
+        </div>
+        <div class="modal-body">
+           <form id="skip_form"  onsubmit="return false;" class="form-horizontal" role="form" style="margin-left:auto;margin-right:auto;border:2px solid #d2d6de; padding:20px 40px 20px 0px;">
+             <fieldset>
+            <div class="form-group">
+                  <label class="col-sm-3 control-label no-padding-right" style="text-align:right;">车牌号</label>
+                  <div class="col-sm-9">
+                  <input type="text" id="skip_plateNumber_input" autocomplete="off"  name="plateNumber" placeholder="输入车牌号" class="col-xs-12">    
+                  <input type="hidden" name="type" value="3"  />    
+                  <input type="hidden" name="mType" value="2"  />    
+                  <input type="hidden" id="skipId_input" name="skipId" />    
+                </div>
+          </div>
+
+          <div class="form-group">
+                  <label class="col-sm-3 control-label no-padding-right" style="text-align:right;">车主姓名</label>
+                  <div class="col-sm-9">
+                  <input type="text" id="skip_foreman_name_input" autocomplete="off"  name="name" placeholder="输入车主姓名" class="col-xs-12">    
+				  <input type="hidden" id="foremanId_input" name="foremanId" />
+                </div>
+          </div>
+            <div class="form-group">
+                  <label class="col-sm-3 control-label no-padding-right" style="text-align:right;">车主手机号</label>
+                  <div class="col-sm-9">
+                  <input type="text" name="mobile" placeholder="输入车主手机号" class="col-xs-12">    
+                </div>
+          </div>
+         <div class="form-group">
+                  <label class="col-sm-3 control-label no-padding-right" style="text-align:right;">车主身份证</label>
+                  <div class="col-sm-9">
+                  <input type="text" name="idcard" placeholder="输入车主身份证" class="col-xs-12">    
+                </div>
+          </div>
+                <div class="form-group">
+                  <label class="col-sm-3 control-label no-padding-right" style="text-align:right;">司机姓名</label>
+                  <div class="col-sm-9">
+                  <input type="text"  name="driverName" placeholder="输入司机姓名" class="col-xs-12">    
+                </div>
+          </div>
+            <div class="form-group">
+                  <label class="col-sm-3 control-label no-padding-right" style="text-align:right;">司机手机号</label>
+                  <div class="col-sm-9">
+                  <input type="text" name="driverMobile" placeholder="输入司机手机号" class="col-xs-12">    
+                </div>
+          </div>
+         <div class="form-group">
+                  <label class="col-sm-3 control-label no-padding-right" style="text-align:right;">司机身份证</label>
+                  <div class="col-sm-9">
+                  <input type="text" name="driverIdcard" placeholder="输入司机身份证" class="col-xs-12">    
+                </div>
+          </div>
+          <div class="form-group">
+                  <label class="col-sm-3 control-label no-padding-right" style="text-align:right;">斗容量(m³)</label>
+                  <div class="col-sm-9">
+                  <input type="text" name="capacity" placeholder="输入斗容量" class="col-xs-12">    
+                </div>
+          </div>
+           <div class="form-group">
+                  <label class="col-sm-3 control-label no-padding-right" style="text-align:right;">运费信息</label>
+                  <div class="col-sm-9">
+                  <table id="skip_material_table">
+                    <thead>
+           			 <tr>
+                        <th>材料</th>
+                        <th>计薪方式</th>
+                        <th>单位薪水(元)</th>
+                      </tr>
+                     </thead>
+                     <tbody>
+                     </tbody>
+                  </table>
+                </div>
+          </div>
+              <button type="button" id="add_skip_material_btn" style="float:right;"  title="添加运费信息" class="col-sm-1 btn btn-xs btn-success">                <i class="icon-plus bigger-120"></i>              </button>
+            </fieldset>
+             </form>
+        </div>
+        <div class="modal-footer">
+          
+          <button type="button" class="btn btn-default" id="skip-dismiss_btn" data-dismiss="modal">关闭</button>
+          <button type="button" class="btn btn-primary" id="form_submit_btn"> 确认 </button>
+        </div>
+      </div><!-- /.modal-content -->
+    </div><!-- /.modal -->
+	</div>
+	
+	
+	
+	<div class="modal fade" id="showWorkerModal" tabindex="-1" role="dialog" aria-labelledby="showWorkerModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+            &times;
+          </button>
+          <h4 class="modal-title">
+          	运费信息
+          </h4>
+        </div>
+        <div class="modal-body">
+                  <table id="worker_table_show">
+                    <thead>
+           			 <tr>
+                        <th>材料</th>
+                        <th>计薪方式</th>
+                        <th>单位薪水(元)</th>
+                      </tr>
+                     </thead>
+                     <tbody>
+                     </tbody>
+                  </table>
+          </div>
+          
+        <div class="modal-footer">
+          
+          <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+        </div>
+      </div><!-- /.modal-content -->
+    </div><!-- /.modal -->
+	</div>
+<!--[if !IE]> -->
+<!-- <select class="form-control col-xs-10 col-sm-5">
+                  <option value="1">普工</option>
+                  <option value="2">钢筋工</option>
+                  <option value="3">水泥工</option>
+                </select> -->
+  <script type="text/javascript">
+    window.jQuery
+        || document
+            .write("<script src='assets/js/jquery-2.0.3.min.js'>"
+                + "<"+"/script>");
+  </script>
+
+  <!-- <![endif]-->
+
+  <!--[if IE]>
+<script type="text/javascript">
+ window.jQuery || document.write("<script src='assets/js/jquery-1.10.2.min.js'>"+"<"+"/script>");
+</script>
+<![endif]-->
+
+  <script type="text/javascript">
+    if ("ontouchend" in document)
+      document
+          .write("<script src='assets/js/jquery.mobile.custom.min.js'>"
+              + "<"+"/script>");
+  </script>
+  <script src="assets/bootstrap-table/bootstrap.min.js"></script>
+<script src="assets/bootstrap-table/bootstrap-table.js"></script>
+<script src="assets/bootstrap-table/bootstrap-table-editable.js"></script>
+<script src="assets/bootstrap-table/bootstrap-editable.js"></script>
+<script src="assets/js/bootstrap-typeahead.js"></script>
+<script src="assets/js/bootstrapValidator.js"></script>
+<script src="assets/js/bootstrap-confirmation.min.js"></script>
+<script>
+var skip=0;
+var $table_skip = $('#table');
+var $skip_material_table = $('#skip_material_table');
+var $table_worker_show = $('#worker_table_show');
+var formURL;
+var material_type_data;
+var unit_price_data;
+
+
+function populateForm(data) { 
+	$.each(data, function(key, value){  
+	    var $ctrl = $('[name='+key+']'); 
+	    if($ctrl.is('select')){
+	        $("option",$ctrl).each(function(){
+	            if (this.value==value) { this.selected=true; }
+	        });
+	    }
+	    else {
+	        switch($ctrl.attr("type"))  
+	        {  
+	            case "text" :  case "hidden":  case "textarea":  
+	                $ctrl.val(value);   
+	                break;   
+	            case "radio" : case "checkbox":   
+	                $ctrl.each(function(){
+	                   if($(this).attr('value') == value) {  $(this).attr("checked",value); } });   
+	                break;
+	        } 
+	    }})} 
+   
+function work_responseHandler(res){
+	return {
+        rows: res,
+        total: 0
+      }
+}
+function fitForm(row,updateTable){
+	if(!unit_price_data){
+		unit_price_data=[];
+		$.ajax({
+            cache: true,
+            type: "GET",
+            url:"priceTypes/3",
+            async: false,
+            error: function(request) {
+                alert("请求出错");
+            },
+            success: function(data) {
+               $.each(data,function(index,item){
+           			unit_price_data.push({value:item.id,text:item.name});
+               });
+            }
+        });
+	}
+	if(!material_type_data){
+		material_type_data = []; 
+		$.ajax({
+            cache: true,
+            type: "GET",
+            url:"materialtype",
+            async: false,
+            error: function(request) {
+                alert("请求出错");
+            },
+            success: function(data) {
+               $.each(data,function(index,item){
+           	   	   material_type_data.push({value:item.id,text:item.mtName});
+               });
+            }
+        });
+	}
+	$skip_material_table.bootstrapTable({
+  		   pagination: false,
+           showRefresh: false,
+           search: false,
+           responseHandler:work_responseHandler,
+           columns:[
+          	 {
+          		 field: "materialType",
+                 title: "材料",
+                 editable: {
+                	 type: 'select',
+                	 source:material_type_data,
+                	 validate:function(value){
+                		 if($.trim(value) == ''||!value){
+                  			 return "此字段不能为空"
+                  		 }
+                	 }
+                 }
+          	 },{
+          		 field: "basePriceType",
+                 title: "计薪方式",
+                 editable: {
+                	 type: 'select',
+                	 source:unit_price_data,
+                	 validate:function(value){
+                		 if($.trim(value) == ''||!value){
+                  			 return "此字段不能为空"
+                  		 }
+                	 }
+                 }
+          	 },{
+          		 field: "unitPrice",
+                 title: "单位薪水(元)",
+                 editable:{
+                	 type:"text",
+                	 validate:function(value){
+                		 if($.trim(value) == ''||!value){
+                  			 return "此字段不能为空"
+                  		 }
+                	 }
+                 }
+          	 },{
+                 title: "操作",
+                 events:worker_operateEvents,
+                 formatter:worker_operateFormatter
+          	 }],
+          	 onClickCell: function (field, value, row, $element) {
+                 rowIndex = $element.closest('tr').attr('data-index');
+            	 $skip_material_table.find('tr[data-index="'+rowIndex+'"]  td:last-child').find('a[class="save"]').css("display","block");
+           		 $skip_material_table.find('tr[data-index="'+rowIndex+'"]  td:last-child').find('a[class="remove"]').css("display","none");
+             
+             }
+  	 });
+	$skip_material_table.bootstrapTable('refresh' ,{url: skip+"/materialPrices"});
+	if(row){
+		populateForm(row);
+	 }
+   };
+   var ROW;
+   function initConfirm(){
+   	$('[data-toggle=confirmation-singleton]').confirmation({
+   	    rootSelector: '[data-toggle=confirmation-singleton]',
+   	    onConfirm: function() {
+   	    	$.ajax({
+                cache: true,
+                type: "POST",
+                url:"skip/delete/"+ROW.id,
+                data:{foreman:ROW.foremanId},
+                async: false,
+                error: function(request) {
+                    alert("请求出错");
+                },
+                success: function(data) {
+                   if(data.success){
+                	   $table_skip.bootstrapTable('remove', {
+                           field: 'id',
+                           values: [ROW.id]
+                       });
+                	   initConfirm();
+                   }
+                }
+            });
+   	    }
+      });
+   }
+    $(function(){
+    	$table_skip.on('load-success.bs.table', function (e) {
+    		initConfirm();
+    	});
+      $("#btn_add_skip").click(function(){
+    	  $('form')[0].reset();
+    	  $("#skip_plateNumber_input").removeAttr("disabled");
+    	  skip=1000000+Math.random().toFixed(3)*1000+$("#table").find("tr").length;
+    	  fitForm();
+    	  formURL=skip+"/addSkip";
+    	  $("#addskipModalLabel_h4").html("添加拉料车信息");
+      });
+      $("#add_skip_material_btn").click(function(){
+    	  var data={
+      	  		"materialType":"",
+      	  		"basePriceType":"",
+      	  		"unitPrice":""
+      	  }
+    	  $("form").find('span[class="tip"]').remove();
+      	  $skip_material_table.bootstrapTable('append', data);
+      });
+      
+      $("#skip_form").bootstrapValidator({
+	    	  fields: {
+	    		  plateNumber:{
+	    				 validators: {
+	 	                    notEmpty: {
+	 	                        message: '此字段不能为空'
+	 	                    }
+	 	                }
+	 			 },
+	 			 name:{
+	    				 validators: {
+	 	                    notEmpty: {
+	 	                        message: '此字段不能为空'
+	 	                    }
+	 	                }
+	 			 },
+	 			 mobile:{
+	    				 validators: {
+	 	                    notEmpty: {
+	 	                        message: '此字段不能为空'
+	 	                    },
+		                    stringLength: {
+		                    	min: 11,
+		                        max: 11,
+		                        message: '手机号必须为11位'
+		                    },
+		                    regexp: {
+		                        regexp: /^[0-9]+$/,
+		                        message: '请填写数字'
+		                    }
+	 	                }
+	 			 },
+	 			 driverName:{
+	    				 validators: {
+	 	                    notEmpty: {
+	 	                        message: '此字段不能为空'
+	 	                    }
+	 	                }
+	 			 },
+	 			 driverMobile:{
+	    				 validators: {
+	 	                    notEmpty: {
+	 	                        message: '此字段不能为空'
+	 	                    },
+		                    stringLength: {
+		                    	min: 11,
+		                        max: 11,
+		                        message: '手机号必须为11位'
+		                    },
+		                    regexp: {
+		                        regexp: /^[0-9]+$/,
+		                        message: '请填写数字'
+		                    }
+	 	                }
+	 			 },
+	 			capacity:{
+	 				 validators: {
+	 	                    notEmpty: {
+	 	                        message: '此字段不能为空'
+	 	                    },
+		                    regexp: {
+		                        regexp: /^[0-9]+$/,
+		                        message: '请填写数字'
+		                    }
+	 	                }
+	 			}
+	    	  }
+      });
+      $("#form_submit_btn").click(function(){
+    	 var btn = $(this);
+    	 $("#skip_plateNumber_input").removeAttr("disabled");
+    	 $("#skip_form").bootstrapValidator('validate');
+ 	  	 if($("#skip_form").data("bootstrapValidator").isValid()){
+ 	  		var mutl=false;
+				
+ 			if($("#skip_material_table").find("tr[data-index]").length>0){
+ 				mutl=true;
+ 			}
+ 			if(mutl){
+ 				$.ajax({
+ 	                cache: false,
+ 	                type: "POST",
+ 	                url:formURL,
+ 	                data:$('#skip_form').serialize(),
+ 	                async: false,
+ 	                error: function(request) {
+ 	                    alert("请求出错");
+ 	                },
+ 	                success: function(data) {
+ 	                   var obj = eval(data);
+ 	                   if(obj.success){
+ 	                   	 $("#skip-dismiss_btn").click();
+ 	                   	 window.location.reload();
+ 	                   }
+ 	                },
+ 	                beforeSend: function(){
+ 	   	  	        	$(btn).attr("disabled","disabled");
+ 	   	  	           },
+ 	 	            complete: function(){
+ 	 	          	    $(btn).removeAttr("disabled");
+ 	 	            }
+ 	            });
+ 			}else{
+  				$("#skip_material_table").parent().parent().parent().after("<span class='tip' style='color:red;font-size:12px;'>请填写运费信息</span>");
+ 			}
+ 	  		
+ 	  	 }
+      });
+    })
+window.worker_operateEvents = {
+    	'click .remove':function(e, value, row, index){
+    		if(row.id!=-1){
+    			$.ajax({
+                    cache: true,
+                    type: "POST",
+                    url:skip+"/deleteSkipMaterialPrice/"+row.id,
+                    error: function(request) {
+                        alert("请求出错");
+                    },
+                    success: function(data) {
+                       if(data.success){
+                    	   $skip_material_table.bootstrapTable('remove', {
+                               field: 'id',
+                               values: [row.id]
+                           });
+                       }
+                    }
+                });
+    		}else{
+    			$skip_material_table.bootstrapTable('remove', {
+                    field: 'id',
+                    values: [row.id]
+                });
+    		}
+    	
+    	},
+    	'click .save': function (e, value, row, index) {
+    		if($("#skip_plateNumber_input").val().trim()==""){
+    			alert("请先填写拉料车信息");
+	       		return;
+	       	}
+    		var URL=skip+"/addSkipMaterialPrice";
+    		if (row.id&&row.id!=-1){
+    			URL=skip+"/editSkipMaterialPrice/"+row.id;
+    		}
+    		$.ajax({
+                cache: true,
+                type: "POST",
+                url:URL,
+                data: row,
+                error: function(request) {
+                    alert("请求出错");
+                },
+                success: function(data) {
+                   if(!data.success){
+                	  alert(data.msg)
+                	  $skip_material_table.find('tr[data-index="'+index+'"]  td:last-child').find('a[class="save"]').css("display","block");
+               		  $skip_material_table.find('tr[data-index="'+index+'"]  td:last-child').find('a[class="remove"]').css("display","block");
+                	  row.id=-1;
+                   }else{
+                	 if($("#skip_plateNumber_input").val().trim()!=""){
+                    	$("#skip_plateNumber_input").attr("disabled","disabled");
+                     }
+                	 row.id=data.msg;
+               		 $skip_material_table.find('tr[data-index="'+index+'"]  td:last-child').find('a[class="save"]').css("display","none");
+               		 $skip_material_table.find('tr[data-index="'+index+'"]  td:last-child').find('a[class="remove"]').css("display","block");
+                   }
+                }
+            });
+    	
+        }
+    }    
+window.operateEvents = {
+        'click .edit': function (e, value, row, index) {
+        	e.stopPropagation();
+       	    $("#skip_plateNumber_input").removeAttr("disabled");
+        	$("#addskipModalLabel_h4").html("编辑工头信息");
+           	$("#btn_edit_skip").click();
+           	formURL="skip/edit/"+row.id;
+           	skip=row.id;
+           	fitForm(row);
+        },
+        'click .detail':function(e, value, row, index){
+        	e.stopPropagation();
+        	skip=row.id;
+        	$table_worker_show.bootstrapTable({
+        		pagination: false,
+                showRefresh: false,
+                search: false,
+                responseHandler:work_responseHandler,
+                //url: row.foremanId+"/"+row.id+"/showMaterialPrices",
+                columns:[
+                {
+             		 field: "materialType",
+                     title: "材料"
+              	 },{
+              		 field: "basePriceType",
+                     title: "计薪方式"
+              	 },{
+              		 field: "unitPrice",
+                     title: "单位薪水(元)",
+                 }]
+        	 });
+        	if(row&&row.id){
+        	    $table_worker_show.bootstrapTable("refresh",{url:row.foremanId+"/"+row.id+"/showMaterialPrices"});
+        	}
+        	$("#btn_show_workers").click();
+        },
+        'click .remove': function (e, value, row, index) {
+        	e.stopPropagation();
+        	skip=0;
+        	ROW =row;
+        }
+    };
+     
+    function operateFormatter(value, row, index) {
+        return [
+            '&nbsp;&nbsp;&nbsp;&nbsp;<a class="edit" href="javascript:void(0)" title="编辑">',
+            '<i class="icon-edit bigger-150"></i>',
+            '</a>',
+            '</a> &nbsp;&nbsp;&nbsp;&nbsp;',
+            '<a class="remove"  data-toggle="confirmation-singleton" data-placement="left"  href="javascript:void(0)" title="确认删除?">',
+            '<i class="icon-trash bigger-160"></i>', '</a>' ,
+            '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;',
+            '<a class="detail" style="display:none;" href="javascript:void(0)" title="详细">',
+            '<i class="icon-detail bigger-150"></i>']
+            .join('');
+      }  
+
+    function worker_operateFormatter(value, row, index) {
+    	if(row.id){
+    		 return [
+    	            '<a class="save" style="display:none" href="javascript:void(0)" title="保存">',
+    	            '<i class="icon-save bigger-160"></i>',
+    	            '</a>', 
+    	            '<a class="remove"  href="javascript:void(0)" title="删除">',
+    	            '<i class="icon-remove bigger-160"></i>', '</a>' ]
+    	            .join('');
+    	}else{
+        return [
+            '<a class="save" href="javascript:void(0)" title="保存">',
+            '<i class="icon-save bigger-160"></i>',
+            '</a>', 
+            '<a class="remove" style="display:none" href="javascript:void(0)" title="删除">',
+            '<i class="icon-remove bigger-160"></i>', '</a>' ]
+            .join('');
+    	}
+      }   
+    $(function(){
+    	$table_skip.on('click','tr',function(){
+    		$(this).find('.detail')[0].click();
+    	});
+    	
+    	var skipDict = new Array(); 
+		$("#skip_foreman_name_input").typeahead({
+			onSelect: function(item) {
+				var row = skipDict[item.value];
+				$("#skip_form").bootstrapValidator('cleanForm');
+				formURL="skip/addRelationship/"+skip;
+				$("#foremanId_input").val(item.value);
+				fitForm(row,false);
+			},
+			ajax: {
+				url: "foreman/search?type=3",
+				timeout: 500,
+				displayField: "name",
+				triggerLength: 1,
+				method: "get",
+				loadingClass: "loading-circle",
+				preDispatch: function (query) {
+					$("#skip_foreman_name_input").after('<img class="load_img" style="position: absolute;right: 20px; top: 6px;" src="assets/image/5-121204193R7.gif"/>');
+
+					return {
+						param: query
+					}
+				},
+				preProcess: function (data) {
+					$("#skip_foreman_name_input").parent().find(".load_img").css("display","none")
+
+					$.each(data,function(index,item){
+						skipDict[item.id]=item;
+					});
+					return data;
+				}
+			}
+		});
+		
+		var skipDict = new Array(); 
+    	$("#skip_plateNumber_input").typeahead({
+			onSelect: function(item) {
+				var row = skipDict[item.value];
+				$("#skip_form").bootstrapValidator('cleanForm');
+				$("#skipId_input").val(item.value);
+				skip = item.value;
+				formURL="skip/addRelationship/"+skip;
+				populateForm(row);
+			},
+			ajax: {
+				url: "mechanics/search?type=2",
+				timeout: 500,
+				displayField: "plateNumber",
+				triggerLength: 1,
+				method: "get",
+				loadingClass: "loading-circle",
+				preDispatch: function (query) {
+					$("#skip_plateNumber_input").after('<img class="load_img" style="position: absolute;right: 20px; top: 6px;" src="assets/image/5-121204193R7.gif"/>');
+
+					return {
+						param: query
+					}
+				},
+				preProcess: function (data) {
+					$("#skip_plateNumber_input").parent().find(".load_img").css("display","none")
+
+					$.each(data,function(index,item){
+						skipDict[item.id]=item;
+					});
+					return data;
+				}
+			}
+		});
+    })
+  </script>
+</body>
+</html>
